@@ -5,7 +5,8 @@ name_of_user = ARGV[0]
 str_hello = sprintf( "Hello, %s", name_of_user)
 #Вывод фразы Hello, "Имя пользователя"
 puts str_hello
-#Вывод вопроса "Какой ваш любимый язык?"
+
+
 puts "Какой ваш любимый язык?"
 #Переменная в которую записывается любимый язык пользователя
 favorite_language = STDIN.gets.chomp
