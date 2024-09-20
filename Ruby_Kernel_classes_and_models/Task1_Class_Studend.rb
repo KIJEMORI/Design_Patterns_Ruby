@@ -50,12 +50,46 @@ class  Student
 end
 
 
-mas = []
+lines_from_file = []
 file = File.open("main.rb","r")
 
 while !file.eof?
-  mas << file.readline
+  lines_from_file  << file.readline
 end
 
 file.close
-puts mas[2]
+
+Students = []
+
+for index in 0..lines_from_file.size-1 do
+  array_of_date = lines_from_file[index].split(";")
+  
+  name = array_of_date[0]
+  array_without_name = array_of_date-[name]
+  
+  stats = []
+  for index in 0..array_without_name.size-1 do
+    array_without_name[index].split(" ").each{|x| stats<<x}
+  end
+  
+  std = Student.new(name)
+  if stats.size > 0 then
+    for index in 0..stats.size-2 do
+      case stats[index]
+        when "Телефон:"
+          std.phone_number=stats[index+1]
+        when "Телеграм:"
+          std.telegram_account = stats[index+1]
+        when "Почта:"
+          std.mail = stats[index+1]
+        when "Гитхаб:"
+          std.github_account = stats[index+1]
+      end
+      index+=1
+    end   
+  end
+  Students << std
+
+end
+
+Students.each {|n| puts n.get_full_information}
