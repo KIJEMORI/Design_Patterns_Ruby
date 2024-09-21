@@ -40,6 +40,28 @@ if index_first_positiv_number_in_array!=-1 then
 puts "номер первого положительно элемента #{index_first_positiv_number_in_array+1}, индекс - #{index_first_positiv_number_in_array}"
 else puts "нет положительного элемента" end
 
+#Проверка существования названия файла для записи массива
+if ARGV[1] != nil then
+  string = File.open("#{ARGV[1]}.txt"){ |file| file.read }
+  #Вывод считанного файла
+  puts string
+  #Разделение элементов строки на элементы массива
+  array_from_file = string.split(%r{ \s*}) 
+  
+  for i in 0..array_from_file.size-1 do
+    array_from_file[i] = Float(array_from_file[i])
+  end
+  
+  if (ARGV[0] == "1") then
+    result = search_min_in_array(array_from_file)
+  elsif (ARGV[0] == "2") then
+    result = search_max_in_array(array_from_file)
+  elsif (ARGV[0] == "3") then
+    result = search_index_first_positiv_number_in_array(array_from_file)
+  end
+
+  puts "Ответ = #{result}"
+end
 
 
 
