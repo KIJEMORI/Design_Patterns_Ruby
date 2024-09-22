@@ -10,6 +10,6 @@ end
 
 puts "Введите команду ОС"
 command_for_console_OS = STDIN.gets.chomp
-#Вызов системной команды
 
+#Вызов системной команды
 system(command_for_console_OS)
