@@ -19,6 +19,7 @@ puts "-------------------"
 puts "Какой ваш любимый язык?"
 #Переменная в которую записывается любимый язык пользователя
 favorite_language = STDIN.gets.chomp.downcase
+
 #Сравнение введённого любимого языка с потенциальными ответами
 if favorite_language == "ruby" || favorite_language == "руби" 
     then puts "Подлиза" 
