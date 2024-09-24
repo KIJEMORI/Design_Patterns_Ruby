@@ -70,7 +70,6 @@ def product_of_number_divisor(number)
   number = number.abs
   for i in 2..number do
     if(number%i==0 && sum_of_digits_numbers(i)<sum_of_digits_numbers(number)) then 
-      puts i
       product*=i
     end
   end
