@@ -30,16 +30,37 @@ def search_index_first_positiv_number_in_array(array)
   return -1
 end
 
-#Проверка методов
-array = [5,4,1,4,3,2]
-puts search_min_in_array(array)
-puts search_max_in_array(array)
-array1 = [-1,-2,-3]
-index_first_positiv_number_in_array = search_index_first_positiv_number_in_array(array1)
-if index_first_positiv_number_in_array!=-1 then
-puts "номер первого положительно элемента #{index_first_positiv_number_in_array+1}, индекс - #{index_first_positiv_number_in_array}"
-else puts "нет положительного элемента" end
+#==================================== Задание 6
+# Написать программу, которая принимает как аргумент два
+# значения. Первое значение говорит, какой из методов задачи 1
+# выполнить, второй говорит о том, откуда читать список аргументом
+# должен быть написан адрес файла. Далее необходимо прочитать массив
+# и выполнить метод.
 
+#Проверка существования названия файла для записи массива
+if ARGV[1] != nil then
+  string = File.open("#{ARGV[1]}.txt"){ |file| file.read }
+  #Вывод считанного файла
+  puts string
+  #Разделение элементов строки на элементы массива
+  array_from_file = string.split(%r{ \s*}) 
+  
+  for i in 0..array_from_file.size-1 do
+    array_from_file[i] = Float(array_from_file[i])
+  end
+  
+  if (ARGV[0] == "1") then
+    result = search_min_in_array(array_from_file)
+  elsif (ARGV[0] == "2") then
+    result = search_max_in_array(array_from_file)
+  elsif (ARGV[0] == "3") then
+    result = search_index_first_positiv_number_in_array(array_from_file)
+  end
+
+  puts "Ответ = #{result}"
+else
+  puts "Необходимо ввести название файла"
+end
 
 
 
