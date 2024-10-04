@@ -28,36 +28,8 @@ class  Student
     @last_name+" "+@first_name+" "+String(@surname)
   end
   
-  #Геттеры в одну строчку
-  attr_reader :ID, :last_name, :first_name, :surname, :phone_number, :telegram_account, :mail, :github_account
-  
-  def last_name=(last_name)
-    @last_name = last_name
-  end
-
-  def first_name=(first_name)
-    @first_name = first_name
-  end
-
-  def set_surname=(surname)
-    @surname = surname
-  end
-
-  def set_phone_number=(phone_number)
-    @phone_number = phone_number
-  end
-
-  def set_telegram_account=(telegram_account)
-    @telegram_account = telegram_account
-  end
-
-  def set_mail=(mail)
-    @mail = mail
-  end
-
-  def set_github_account=(github_account)
-    @github_account = github_account
-  end
+  #Геттеры и сеттеры в одну строчку
+  attr_accessor :ID, :last_name, :first_name, :surname, :phone_number, :telegram_account, :mail, :github_account
 
   #Получить полную информацию
   def get_full_information
