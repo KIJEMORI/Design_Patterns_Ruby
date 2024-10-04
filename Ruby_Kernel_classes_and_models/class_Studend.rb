@@ -1,6 +1,6 @@
 class  Student
   @@ID = 0
-  
+
   def initialize( string_full_name, options={})
     #да да я знаю что это звучит дико(https://vk.com/video-207565017_456239551)
     @surname = string_full_name.split(" ")
@@ -22,7 +22,7 @@ class  Student
     raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github_account(options["Github"]) == false
     @github_account   = options["Github"]
   end
-  
+
   #Задание полного фио с помощью одного метода
   def set_full_name(string_full_name)
     @surname    = string_full_name.split(" ")
@@ -111,5 +111,51 @@ class  Student
 
     raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github_account(options["Github"]) == false
     @github_account   = options["Github"]
+  end
+
+  def getInfo
+    all_info =                        String(@last_name)
+    all_info +=  " "                + String(@first_name)[0]  + "."
+    all_info +=  " "                + @surname[0]             + "."   if @surname           != nil
+    all_info +=  "; Github: "       + @github_account                  if @github_account    != nil
+
+
+    if @phone_number      == nil then
+      if @telegram_account  == nil then
+        if @mail              != nil then
+          all_info +=  "; Mail: "         + @mail
+        end
+      else
+        all_info +=  "; Telegram: "     + @telegram_account 
+      end
+    else
+      all_info +=  "; Phone: "        + @phone_number  
+    end
+
+    return all_info
+  end
+
+  def get_last_name_and_initials
+    all_info =                        String(@last_name)
+    all_info +=  " "                + String(@first_name)[0]  + "."
+    all_info +=  " "                + @surname[0]             + "."   if @surname           != nil
+    return all_info
+  end
+
+  def get_one_of_contacts
+    
+    if @phone_number      == nil then
+      if @telegram_account  == nil then
+        if @mail              != nil then
+          contact =  "Mail: "         + @mail
+        end
+      else
+        contact =  "Telegram: "     + @telegram_account 
+      end
+    else
+      contact =  "Phone: "        + @phone_number  
+    end
+
+    return contact
   end
 end
