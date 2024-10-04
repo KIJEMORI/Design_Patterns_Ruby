@@ -15,10 +15,6 @@ class  Student
     @mail             = options["Mail"]
     @github_account   = options["Github"]
   end
-
-  def get_ID #метод экземпляра для вывода id студента
-    @ID
-  end
   
   #Задание полного фио с помощью одного метода
   def set_full_name(string_full_name)
@@ -31,65 +27,49 @@ class  Student
   def get_full_name
     @last_name+" "+@first_name+" "+String(@surname)
   end
-  #Задание и вызов имени фамилии и отчества студента по отдельности
-  def get_last_name #метод экземпляра для вывода фамилии
-    @last_name
-  end
-  def set_last_name(last_name)
+  
+  #Геттеры в одну строчку
+  attr_reader :ID, :last_name, :first_name, :surname, :phone_number, :telegram_account, :mail, :github_account
+  
+  def last_name=(last_name)
     @last_name = last_name
   end
-  def get_first_name #метод экземпляра для вывода имени
-    @first_name
-  end
-  def set_first_name(first_name)
+
+  def first_name=(first_name)
     @first_name = first_name
   end
-  def get_surname #метод экземпляра для вывода отчества
-    @surname
-  end
-  def set_surname(surname)
+
+  def set_surname=(surname)
     @surname = surname
   end
 
-  def get_phone_number #метод экземпляра для вывода телефонного номера
-    @phone_number
-  end
-  def set_phone_number(phone_number)
+  def set_phone_number=(phone_number)
     @phone_number = phone_number
   end
 
-  def get_telegram_account #метод экземпляра для вывода телеграма
-    @telegram_account
-  end
-  def set_telegram_account(telegram_account)
+  def set_telegram_account=(telegram_account)
     @telegram_account = telegram_account
   end
 
-  def get_mail #метод экземпляра для вывода почты
-    @mail
-  end
-  def set_mail(mail)
+  def set_mail=(mail)
     @mail = mail
   end
 
-  def get_github_account #метод экземпляра для вывода гитхаба
-    @github_account
-  end
-  def set_github_account(github_account)
+  def set_github_account=(github_account)
     @github_account = github_account
   end
 
   #Получить полную информацию
   def get_full_information
-    may =   String(@ID)+ ") " + @last_name
-    may +=  " "               + @first_name
-    may +=  " "               + @surname          if @surname           != nil
-    may +=  "; Телефон: "     + @phone_number     if @phone_number      != nil
-    may +=  "; Телеграм: "    + @telegram_account if @telegram_account  != nil
-    may +=  "; Почта: "       + @mail             if @mail              != nil
-    may +=  "; Гитхаб: "      + @github_account   if @github_account    != nil
+    all_info =   String(@ID)+ ") " + @last_name
+    all_info +=  " "               + @first_name
+    all_info +=  " "               + @surname          if @surname           != nil
+    all_info +=  "; Phone: "     + @phone_number     if @phone_number      != nil
+    all_info +=  "; Telegram: "    + @telegram_account if @telegram_account  != nil
+    all_info +=  "; Mail: "       + @mail             if @mail              != nil
+    all_info +=  "; Github: "      + @github_account   if @github_account    != nil
 
-    return may
+    return all_info
   end
 end
 
@@ -105,6 +85,7 @@ while !file.eof?
 end
 
 file.close
+
 #Инициализация массива для элементов класса Student
 Students = []
 
