@@ -92,6 +92,32 @@ class  Student
     regex = /  ^https: \/ \/ github\.com \/ [a-zA-Z\d\_\-]{5,32} $  /x
     maybe_github_account.match?(regex) if maybe_github_account != nil
   end
+
+
+  def validate 
+    contacts = Hash[]
+    if @github_account != nil
+      contacts["Git"] = "Аккаунт гит есть"
+    else
+      contacts["Git"] = nil
+    end
+      
+    if @phone_number == nil then
+      if @telegram_account == nil then
+        if @mail == nil then
+          contacts["Contact"] = nil
+        else
+          contacts["Contact"] = "Есть почта"
+        end
+      else
+        contacts["Contact"] = "Есть телеграм аккаунт"
+      end
+    else
+      contacts["Contact"] = "Есть телефон"
+    end
+    
+    return contacts
+  end
 end
 
 
@@ -135,7 +161,7 @@ for index in 0..lines_from_file.size-1 do
       index+=2
     end
   end
-
+  
   #переменная типа Student
   std = Student.new(name, hash)
   #запись студента в массив
@@ -145,4 +171,6 @@ end
 #Вывод всех данных о каждом студенте
 
 Students.each {|n| puts n}
+
+puts Students[0].validate
 
