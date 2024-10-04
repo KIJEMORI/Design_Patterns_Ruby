@@ -159,3 +159,52 @@ class  Student
     return contact
   end
 end
+
+class Student_short < Student
+
+  def initialize(student)
+    
+    super(student.get_last_name_and_initials, {"Github": student.github_account, student.get_one_of_contacts.split(";")[0].delete":": student.get_one_of_contacts.split(";")[1]})
+  end
+
+  def Student_short.from_string(ID, gInfo)
+    @ID = ID
+
+    array_of_date = gInfo.split(";")
+
+    #ФИО обязательное для заполнения
+    @name = array_of_date[0]
+    array_without_name = array_of_date-[@name]
+
+    #Массив для заполнения не обязательных данных студентов со структурой ["Тип данных", "данные", ...]
+    stats = []
+    for index in 0..array_without_name.size-1 do
+      array_without_name[index].split(" ", 2).each{|x| stats<<x}
+    end
+
+    #Создание хэша для заполнения необязательных параметров при создание переменной типа Student
+    hash = Hash[]
+
+    if stats.size > 0 then
+      index = 0
+      while index < stats.size-1 do
+        hash[stats[index].delete ":"] = stats[index+1]
+        index+=2
+      end
+    end
+
+    raise "Некорректный номер телефона"  if Student.is_phone_number(hash["Phone"]) == false
+    @contact     = hash["Phone"]
+
+    raise "Некорректный телеграм аккаунт"  if Student.is_telegram_account(hash["Telegram"]) == false
+    @contact = hash["Telegram"]
+
+    raise "Некорректная почта"  if Student.is_mail(hash["Mail"]) == false
+    @contact            = hash["Mail"]
+
+    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github_account(hash["Github"]) == false
+    @contact   = hash["Github"]
+
+  end
+
+end
