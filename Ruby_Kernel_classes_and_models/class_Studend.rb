@@ -13,8 +13,13 @@ class  Student
     raise "Некорректный номер телефона"  if Student.is_phone_number(options["Phone"]) == false
     @phone_number     = options["Phone"]
 
+    raise "Некорректный телеграм аккаунт"  if Student.is_telegram_account(options["Telegram"]) == false
     @telegram_account = options["Telegram"]
+
+    raise "Некорректная почта"  if Student.is_mail(options["Mail"]) == false
     @mail             = options["Mail"]
+
+    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github_account(options["Github"]) == false
     @github_account   = options["Github"]
   end
   
@@ -31,12 +36,27 @@ class  Student
   end
   
   #Геттеры и сеттеры в одну строчку
-  attr_accessor :ID, :last_name, :first_name, :surname, :telegram_account, :mail, :github_account
-  attr_reader :phone_number
+  attr_accessor :last_name, :first_name, :surname
+  attr_reader :ID, :phone_number, :telegram_account, :mail, :github_account
 
   def phone_number=(phone)
     raise "Некорректный номер телефона"  if Student.is_phone_number(phone) == false
     @phone_number = phone
+  end
+
+  def telegram_account=(telegram)
+    raise "Некорректный номер телефона"  if Student.is_telegram_account(telegram) == false
+    @telegram_account = telegram
+  end
+
+  def mail=(new_mail)
+    raise "Некорректный номер телефона"  if Student.is_mail(new_mail) == false
+    @mail = new_mail
+  end
+
+  def github_account=(github)
+    raise "Некорректный номер телефона"  if Student.is_github_account(github) == false
+    @github_account = github
   end
 
   #Получить полную информацию
@@ -56,6 +76,21 @@ class  Student
   def Student.is_phone_number (maybe_phone_number)
     regex = / ^(8|(\+7))  [\s\-(]?  \d{3}  [\s\-)]?  \d{3}   [\s\-]?   \d{2}    [\s\-]?    \d{2}   $ /x
     maybe_phone_number.match?(regex) if maybe_phone_number != nil
+  end
+
+  def Student.is_telegram_account (maybe_telegram_account)
+    regex = /  ^@ [a-zA-Z\d\_]{5,32} $ /x
+    maybe_telegram_account.match?(regex) if maybe_telegram_account != nil
+  end
+
+  def Student.is_mail (maybe_mail)
+    regex = /^((([0-9A-Za-z]{1}[-0-9A-z\.]{1,}[0-9A-Za-z]{1}))@([-A-Za-z]{1,}\.){1,2}[-A-Za-z]{2,})$ /x
+    maybe_mail.match?(regex) if maybe_mail != nil
+  end
+
+  def Student.is_github_account (maybe_github_account)
+    regex = /  ^https: \/ \/ github\.com \/ [a-zA-Z\d\_\-]{5,32} $  /x
+    maybe_github_account.match?(regex) if maybe_github_account != nil
   end
 end
 
