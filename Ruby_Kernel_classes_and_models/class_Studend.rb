@@ -1,10 +1,7 @@
 class  Student
   @@ID = 0
-
-  #Конструктор который заполняет необязательные поля в любой комбинации с использвание ХЭШа
+  
   def initialize( string_full_name, options={})
-    #options = {"Phone": nil, "Telegram": nil, "Mail": nil, "Github": nil}
-    
     #да да я знаю что это звучит дико(https://vk.com/video-207565017_456239551)
     @surname = string_full_name.split(" ")
 
@@ -12,8 +9,10 @@ class  Student
     @@ID  += 1
 
     @last_name, @first_name, @surname = @surname[0], @surname[1], @surname[2] 
-    
+
+    raise "Некорректный номер телефона"  if Student.is_phone_number(options["Phone"]) == false
     @phone_number     = options["Phone"]
+
     @telegram_account = options["Telegram"]
     @mail             = options["Mail"]
     @github_account   = options["Github"]
@@ -32,19 +31,31 @@ class  Student
   end
   
   #Геттеры и сеттеры в одну строчку
-  attr_accessor :ID, :last_name, :first_name, :surname, :phone_number, :telegram_account, :mail, :github_account
+  attr_accessor :ID, :last_name, :first_name, :surname, :telegram_account, :mail, :github_account
+  attr_reader :phone_number
+
+  def phone_number=(phone)
+    raise "Некорректный номер телефона"  if Student.is_phone_number(phone) == false
+    @phone_number = phone
+  end
 
   #Получить полную информацию
-  def get_full_information
-    all_info =   String(@ID)+ ") " + @last_name
-    all_info +=  " "               + @first_name
-    all_info +=  " "               + @surname          if @surname           != nil
-    all_info +=  "; Phone: "     + @phone_number     if @phone_number      != nil
-    all_info +=  "; Telegram: "    + @telegram_account if @telegram_account  != nil
-    all_info +=  "; Mail: "       + @mail             if @mail              != nil
-    all_info +=  "; Github: "      + @github_account   if @github_account    != nil
+  def to_s
+    all_info =   String(@ID)+ ") "  + @last_name
+    all_info +=  " "                + @first_name
+    all_info +=  " "                + @surname          if @surname           != nil
+    all_info +=  "; Phone: "        + @phone_number     if @phone_number      != nil
+    all_info +=  "; Telegram: "     + @telegram_account if @telegram_account  != nil
+    all_info +=  "; Mail: "         + @mail             if @mail              != nil
+    all_info +=  "; Github: "       + @github_account   if @github_account    != nil
 
     return all_info
+  end
+  
+  
+  def Student.is_phone_number (maybe_phone_number)
+    regex = / ^(8|(\+7))  [\s\-(]?  \d{3}  [\s\-)]?  \d{3}   [\s\-]?   \d{2}    [\s\-]?    \d{2}   $ /x
+    maybe_phone_number.match?(regex) if maybe_phone_number != nil
   end
 end
 
@@ -76,7 +87,7 @@ for index in 0..lines_from_file.size-1 do
   #Массив для заполнения не обязательных данных студентов со структурой ["Тип данных", "данные", ...]
   stats = []
   for index in 0..array_without_name.size-1 do
-    array_without_name[index].split(" ").each{|x| stats<<x}
+    array_without_name[index].split(" ", 2).each{|x| stats<<x}
   end
 
   #Создание хэша для заполнения необязательных параметров при создание переменной типа Student
@@ -97,4 +108,6 @@ for index in 0..lines_from_file.size-1 do
   
 end
 #Вывод всех данных о каждом студенте
-Students.each {|n| puts n.get_full_information}
+
+Students.each {|n| puts n}
+
