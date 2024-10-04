@@ -1,8 +1,10 @@
 class  Student
   @@ID = 0
 
-  #Конструктор который заполняет необязательные поля в любой комбинации
+  #Конструктор который заполняет необязательные поля в любой комбинации с использвание ХЭШа
   def initialize( string_full_name, options={})
+    #options = {"Phone": nil, "Telegram": nil, "Mail": nil, "Github": nil}
+    
     #да да я знаю что это звучит дико(https://vk.com/video-207565017_456239551)
     @surname = string_full_name.split(" ")
 
