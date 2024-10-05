@@ -10,17 +10,7 @@ class  Student
 
     @last_name, @first_name, @surname = @surname[0], @surname[1], @surname[2] 
 
-    raise "Некорректный номер телефона"  if Student.is_phone_number(options["Phone"]) == false
-    @phone_number     = options["Phone"]
-
-    raise "Некорректный телеграм аккаунт"  if Student.is_telegram_account(options["Telegram"]) == false
-    @telegram_account = options["Telegram"]
-
-    raise "Некорректная почта"  if Student.is_mail(options["Mail"]) == false
-    @mail             = options["Mail"]
-
-    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github_account(options["Github"]) == false
-    @github_account   = options["Github"]
+    set_contacts(options)
   end
 
   #Задание полного фио с помощью одного метода
@@ -158,17 +148,53 @@ class  Student
 
     return contact
   end
+
+  def self.read_from_txt(file)
+    #Открытие файла с данными и чтение их в массив
+    lines_from_file = []
+    begin
+      file = File.open(file,"r")
+    rescue => e
+      puts e
+    end
+
+    while !file.eof?
+      lines_from_file  << file.readline
+    end
+
+    file.close
+
+    #Инициализация массива для элементов класса Student
+    students = []
+
+    #Разбиение каждой строки из файла на элементы для заполнения элементов класса Student
+    for index in 0..lines_from_file.size-1 do
+      
+      #переменная типа Student
+      begin
+        std = lines_from_file[index].to_Student
+      rescue => e
+        puts e
+      end
+      #запись студента в массив
+      students << std
+      
+    end
+    return students
+  end
 end
 
 class Student_short < Student
 
   def initialize(student)
-    
-    super(student.get_last_name_and_initials, {"Github": student.github_account, student.get_one_of_contacts.split(";")[0].delete":": student.get_one_of_contacts.split(";")[1]})
+    @ID = student.ID
+    @name = student.get_last_name_and_initials
+    @contact = student.get_one_of_contacts
+    @github_account = student.github_account
   end
 
-  def Student_short.from_string(ID, gInfo)
-    @ID = ID
+  def Student_short.from_string(id, gInfo)
+    @ID = id
 
     array_of_date = gInfo.split(";")
 
@@ -207,4 +233,35 @@ class Student_short < Student
 
   end
 
+end
+
+class String
+  def to_Student(string_full_info = self)
+    #puts string_full_info
+    #разбиение на каждый параметр с его значением
+    array_of_date = string_full_info.split(";")
+
+    #ФИО обязательное для заполнения
+    name = array_of_date[0]
+    array_without_name = array_of_date-[name]
+
+    #Массив для заполнения не обязательных данных студентов со структурой ["Тип данных", "данные", ...]
+    stats = []
+    for index in 0..array_without_name.size-1 do
+      array_without_name[index].split(" ", 2).each{|x| stats<<x}
+    end
+
+    #Создание хэша для заполнения необязательных параметров при создание переменной типа Student
+    hash = Hash[]
+
+    if stats.size > 0 then
+      index = 0
+      while index < stats.size-1 do
+        hash[stats[index].delete ":"] = stats[index+1]
+        index+=2
+      end
+    end
+    
+    return Student.new(name, hash)
+  end
 end
