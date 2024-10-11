@@ -1,17 +1,40 @@
-class  Student
-#Конструктор
-  def initialize( last_name, first_name, surname = nil, options={"Phone": nil, "Telegram":nil, "Mail":nil, "Github":nil})
-    
-    set_FIO(last_name: last_name, first_name: first_name, surname: surname)
+class People
+  def initialize(id)
+    @id = id
+  end
+  attr_reader :id
+#Получение полной информации исходя из переменной объекта класса
+  def to_s
+    instance_variables.map do |type|
+      value = instance_variable_get(type)
+      type = type.to_s.delete_prefix('@')
+      if type == "last_name" || type == "first_name" || (type == "surname" && value != nil) || type == "name" then
+        "#{value}"
+      else 
+        "; #{type.capitalize}: #{value}" if value != nil
+      end
+    end.join(" ").gsub("  ", " ").gsub(" ;", ";")
+  end
+end
 
+class  Student < People
+#Конструктор
+  def initialize( last_name, first_name, surname = nil, options={ "phone": nil, "telegram":nil, "mail":nil, "github":nil, id: nil})
+    super(options[:id])
+    set_FIO(last_name: last_name, first_name: first_name, surname: surname)
     set_contacts(options)
   end
 #Сеттер фамилии, имени или отчества
   def set_FIO(last_name: @last_name, first_name: @first_name, surname: @surname)
+    last_name = last_name.capitalize
     raise "Некорректно введена фамилия"  if !Student.is_name(last_name)
     @last_name = last_name
+
+    first_name = first_name.capitalize
     raise "Некорректно введено имя"  if !Student.is_name(first_name)
     @first_name = first_name
+
+    surname = surname.capitalize if surname != nil
     raise "Некорректно введено отчество"  if Student.is_name(surname) == false
     @surname = surname
   end
@@ -28,54 +51,41 @@ class  Student
   end
   
 #Геттеры в одну строчку
-  attr_reader :ID, :phone_number, :telegram_account, :mail, :github_account, :last_name, :first_name, :surname
-
-#Получить полную информацию
-  def to_s
-    all_info =   String(@ID)+ ") "  + String(@last_name)
-    all_info +=  " "                + String(@first_name)
-    all_info +=  " "                + @surname          if @surname           != nil
-    all_info +=  "; Phone: "        + @phone_number     if @phone_number      != nil
-    all_info +=  "; Telegram: "     + @telegram_account if @telegram_account  != nil
-    all_info +=  "; Mail: "         + @mail             if @mail              != nil
-    all_info +=  "; Github: "       + @github_account   if @github_account    != nil
-
-    return all_info
-  end
+  attr_reader :phone, :telegram, :mail, :github, :last_name, :first_name, :surname
   
 #Метод класса провеерки регулярными выражениями входных данных, возвращает true, false или nil
   def Student.is_name(maybe_name)
     regex = /^[А-Яё]{1}[а-яё]{1,10} /x
     maybe_name.match?(regex) if maybe_name != nil
   end
-  def Student.is_phone_number (maybe_phone_number)
+  def Student.is_phone (maybe_phone)
     regex = / ^(8|(\+7))  [\s\-(]?  \d{3}  [\s\-)]?  \d{3}   [\s\-]?   \d{2}    [\s\-]?    \d{2}   $ /x
-    maybe_phone_number.match?(regex) if maybe_phone_number != nil
+    maybe_phone.match?(regex) if maybe_phone != nil
   end
-  def Student.is_telegram_account (maybe_telegram_account)
+  def Student.is_telegram (maybe_telegram)
     regex = /  ^@ [a-zA-Z\d\_]{5,32} $ /x
-    maybe_telegram_account.match?(regex) if maybe_telegram_account != nil
+    maybe_telegram.match?(regex) if maybe_telegram != nil
   end
   def Student.is_mail (maybe_mail)
     regex = /^((([0-9A-Za-z]{1}[-0-9A-z\.]{1,}[0-9A-Za-z]{1}))@([-A-Za-z]{1,}\.){1,2}[-A-Za-z]{2,})$ /x
     maybe_mail.match?(regex) if maybe_mail != nil
   end
-  def Student.is_github_account (maybe_github_account)
+  def Student.is_github (maybe_github)
     regex = /  ^https: \/ \/ github\.com \/ [a-zA-Z\d\_\-]{5,32} $  /x
-    maybe_github_account.match?(regex) if maybe_github_account != nil
+    maybe_github.match?(regex) if maybe_github != nil
   end
 
 #Метод подтверждения наличия гита или контакта у студента
   def validate 
     contacts = Hash[]
-    if @github_account != nil
+    if @github != nil
       contacts["Git"] = true
     else
       contacts["Git"] = false
     end
       
-    if @phone_number == nil then
-      if @telegram_account == nil then
+    if @phone == nil then
+      if @telegram == nil then
         if @mail == nil then
           contacts["Contact"] = false
         else
@@ -92,29 +102,28 @@ class  Student
   end
 
 #Метод задающий или меняющий контакты
-  def set_contacts(options = {"Phone": @phone_number, "Telegram": @telegram_account, "Mail": @mail, "Github": @github_account})
+  def set_contacts(options = {"phone": @phone, "telegram": @telegram, "mail": @mail, "github": @github})
     
-    raise "Некорректный номер телефона"  if Student.is_phone_number(options["Phone"]) == false
-    @phone_number     = options["Phone"]
+    raise "Некорректный номер телефона"  if Student.is_phone(options["phone"]) == false
+    @phone = options["phone"]
 
-    raise "Некорректный телеграм аккаунт"  if Student.is_telegram_account(options["Telegram"]) == false
-    @telegram_account = options["Telegram"]
+    raise "Некорректный телеграм аккаунт"  if Student.is_telegram(options["telegram"]) == false
+    @telegram = options["telegram"]
 
-    raise "Некорректная почта"  if Student.is_mail(options["Mail"]) == false
-    @mail             = options["Mail"]
+    raise "Некорректная почта"  if Student.is_mail(options["mail"]) == false
+    @mail = options["mail"]
 
-    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github_account(options["Github"]) == false
-    @github_account   = options["Github"]
+    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github(options["github"]) == false
+    @github = options["github"]
   end
 
 #Получить фамилию и инициалы, гитхаб (при наличии) и один из контактов (при наличии)
   def getInfo
     all_info =    get_last_name_and_initials
-    all_info +=  "; Github: " + @github_account if @github_account != nil
+    all_info +=  "; github: " + @github if @github != nil
     all_info += "; " + get_one_of_contacts if get_one_of_contacts != nil
     return get_last_name_and_initials 
   end
-
 #Получить фамилию и инициалы
   def get_last_name_and_initials
     all_info =   @last_name
@@ -122,17 +131,17 @@ class  Student
     all_info +=  " " + String(@surname[0]) + "." if @surname != nil
     return all_info
   end
-#Получить фамилию и один из контактов (при наличии)
+#Получить один из контактов (при наличии)
   def get_one_of_contacts
     
-    if @phone_number      != nil then
-      return   "Phone: " + @phone_number 
+    if @phone      != nil then
+      return   "phone-" + @phone 
     else
-      if @telegram_account  != nil then
-        return   "Telegram: "     + @telegram_account 
+      if @telegram  != nil then
+        return   "telegram-"     + @telegram 
       else
         if @mail != nil then
-          return "Mail: "         + @mail
+          return "mail-"         + @mail
         end
       end
     end
@@ -141,55 +150,21 @@ class  Student
 
 end
 
-class Student_short 
+class Student_short < People
 
-  def initialize(student)
-    @ID = student.ID
-    @name = student.get_last_name_and_initials
-    @contact = student.get_one_of_contacts
-    @github_account = student.github_account
+  def initialize(options ={student: student, info: str_info, id: nil})
+    super(options[:id])
+   
+    if(!options[:student]) then
+      options[:student] = options[:info].to_Student
+    end
+    
+    @name = options[:student].get_last_name_and_initials
+    @contact = options[:student].get_one_of_contacts
+    @github = options[:student].github
   end
 
-  def Student_short.from_string(id, gInfo)
-    @ID = id
-
-    array_of_date = gInfo.split(";")
-
-    #ФИО обязательное для заполнения
-    @name = array_of_date[0]
-    array_without_name = array_of_date-[@name]
-
-    #Массив для заполнения не обязательных данных студентов со структурой ["Тип данных", "данные", ...]
-    stats = []
-    for index in 0..array_without_name.size-1 do
-      array_without_name[index].split(" ", 2).each{|x| stats<<x}
-    end
-
-    #Создание хэша для заполнения необязательных параметров при создание переменной типа Student
-    hash = Hash[]
-
-    if stats.size > 0 then
-      index = 0
-      while index < stats.size-1 do
-        hash[stats[index].delete ":"] = stats[index+1]
-        index+=2
-      end
-    end
-
-    raise "Некорректный номер телефона"  if Student.is_phone_number(hash["Phone"]) == false
-    @contact     = hash["Phone"]
-
-    raise "Некорректный телеграм аккаунт"  if Student.is_telegram_account(hash["Telegram"]) == false
-    @contact = hash["Telegram"]
-
-    raise "Некорректная почта"  if Student.is_mail(hash["Mail"]) == false
-    @contact            = hash["Mail"]
-
-    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github_account(hash["Github"]) == false
-    @contact   = hash["Github"]
-
-  end
-
+  attr_reader :name, :contact, :github
 end
 
 class String
@@ -200,7 +175,7 @@ class String
     array_of_date = string_full_info.split(";")
 
     #ФИО обязательное для заполнения
-    name = array_of_date[0]
+    name = array_of_date[0].downcase
     array_without_name = array_of_date-[name]
     #разделение фио на разные параметры и запись в массив для дальнейшего извлечения в конструктор
     fio = name.split(" ")
@@ -217,7 +192,7 @@ class String
     if stats.size > 0 then
       index = 0
       while index < stats.size-1 do
-        hash[stats[index].delete ":"] = stats[index+1]
+        hash[stats[index].downcase.delete":"] = stats[index+1]
         index+=2
       end
     end
