@@ -27,10 +27,18 @@ def count_of_chet(massive)
   yield (massive.map{|x| x.to_i}.select{|x| x%2==0}.size)
 end
 
+# 1.43	Дан целочисленный массив. 
+# Необходимо найти количество минимальных элементов.
+
+def count_of_min(massive)
+  yield (massive.map{|x| x.to_i}.select{|x| x == massive.min}.count)
+end
+
 puts '1) заполнить список'
 puts '2) циклический сдвиг вправо на две позиции целочисленный массив'
 puts '3) циклический сдвиг вправо на одну позицию целочисленный массив'
 puts '4) количество чётных элементов целочисленного массива'
+puts '5) количество минимальных элементов целочисленного массива'
 puts '0) завершение программы'
 print 'Ввод: '
 variant = gets().to_i
@@ -51,7 +59,8 @@ while variant != 0 do
   cyclic_shift_right_by_two(massive) {|thing| p thing } if variant == 2
   cyclic_shift_right_by_one(massive) {|thing| p thing } if variant == 3
   count_of_chet(massive) {|thing| p thing } if variant == 4
-
+  count_of_min(massive) {|thing| p thing } if variant == 5
+  
   print 'Ввод: '
   variant = gets().to_i
 end
