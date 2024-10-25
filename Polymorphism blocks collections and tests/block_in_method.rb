@@ -20,9 +20,17 @@ def cyclic_shift_right_by_one(massive)
   yield (massive.map{|x| x.to_i}.rotate(-1))
 end
 
+# 1.31	Дан целочисленный массив.
+# Найти количество чётных элементов.
+
+def count_of_chet(massive)
+  yield (massive.map{|x| x.to_i}.select{|x| x%2==0}.size)
+end
+
 puts '1) заполнить список'
 puts '2) циклический сдвиг вправо на две позиции целочисленный массив'
 puts '3) циклический сдвиг вправо на одну позицию целочисленный массив'
+puts '4) количество чётных элементов целочисленного массива'
 puts '0) завершение программы'
 print 'Ввод: '
 variant = gets().to_i
@@ -42,6 +50,7 @@ while variant != 0 do
   end
   cyclic_shift_right_by_two(massive) {|thing| p thing } if variant == 2
   cyclic_shift_right_by_one(massive) {|thing| p thing } if variant == 3
+  count_of_chet(massive) {|thing| p thing } if variant == 4
 
   print 'Ввод: '
   variant = gets().to_i
