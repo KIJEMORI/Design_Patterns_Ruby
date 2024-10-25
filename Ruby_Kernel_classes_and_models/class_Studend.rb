@@ -4,22 +4,22 @@ require_relative 'class_People'
 class  Student < People
 #Конструктор
   def initialize( last_name, first_name, surname = nil, options={ "phone": nil, "telegram":nil, "mail":nil, "github":nil, id: nil})
-    super(options[:id])
+    super(options)
     self.name= ({last_name: last_name, first_name: first_name, surname: surname})
     self.contacts= (options)
   end
 #Сеттер фамилии, имени или отчества
   def name=(options= {last_name: @last_name, first_name: @first_name, surname: @surname})
     last_name = options[:last_name]
-    raise "Некорректно введена фамилия"  if !Student.is_name(last_name)
+    raise "Некорректно введена фамилия"  if !Student.is_name?(last_name)
     @last_name = last_name.capitalize
 
     first_name = options[:first_name]
-    raise "Некорректно введено имя"  if !Student.is_name(first_name)
+    raise "Некорректно введено имя"  if !Student.is_name?(first_name)
     @first_name = first_name.capitalize
 
     surname = options[:surname]
-    raise "Некорректно введено отчество"  if Student.is_name(surname) == false
+    raise "Некорректно введено отчество"  if Student.is_name?(surname) == false
     @surname = surname.capitalize if surname != nil
   end
 
@@ -35,58 +35,56 @@ class  Student < People
   end
   
 #Геттеры в одну строчку
-  attr_reader :phone, :telegram, :mail, :github, :last_name, :first_name, :surname
+  attr_reader :phone, :telegram, :mail, :last_name, :first_name, :surname
   
 #Метод класса провеерки регулярными выражениями входных данных, возвращает true, false или nil
-  def Student.is_name(maybe_name)
+  def Student.is_name?(maybe_name)
     regex = /^[А-Яё]{1}[а-яё]{1,10} /x
     maybe_name.capitalize.match?(regex) if maybe_name != nil
   end
-  def Student.is_phone (maybe_phone)
+  def Student.is_phone? (maybe_phone)
     regex = / ^(8|(\+7))  [\s\-(]?  \d{3}  [\s\-)]?  \d{3}   [\s\-]?   \d{2}    [\s\-]?    \d{2}   $ /x
     maybe_phone.match?(regex) if maybe_phone != nil
   end
-  def Student.is_telegram (maybe_telegram)
+  def Student.is_telegram? (maybe_telegram)
     regex = /  ^@ [a-zA-Z\d\_]{5,32} $ /x
     maybe_telegram.match?(regex) if maybe_telegram != nil
   end
-  def Student.is_mail (maybe_mail)
+  def Student.is_mail? (maybe_mail)
     regex = /^((([0-9A-Za-z]{1}[-0-9A-z\.]{1,}[0-9A-Za-z]{1}))@([-A-Za-z]{1,}\.){1,2}[-A-Za-z]{2,})$ /x
     maybe_mail.match?(regex) if maybe_mail != nil
   end
-  def Student.is_github (maybe_github)
-    regex = /  ^https: \/ \/ github\.com \/ [a-zA-Z\d\_\-]{5,32} $  /x
-    maybe_github.match?(regex) if maybe_github != nil
-  end
+  
 
 #Методы подтверждения наличия гита или контакта у студента
-  def validate 
-    return (validate_github && validate_contact)
+  def validate? 
+    return (validate_github? && validate_contact?)
   end
 
-  def validate_github
+  def validate_github?
     return true if @github != nil
     return false
   end
 
-  def validate_contact
+  def validate_contact?
     return true if one_of_contacts != nil
     return false
   end
 #Метод задающий или меняющий контакты
   def contacts=(options = {"phone": @phone, "telegram": @telegram, "mail": @mail, "github": @github})
     
-    raise "Некорректный номер телефона"  if Student.is_phone(options["phone"]) == false
+    raise "Некорректный номер телефона"  if Student.is_phone?(options["phone"]) == false
     @phone = options["phone"]
 
-    raise "Некорректный телеграм аккаунт"  if Student.is_telegram(options["telegram"]) == false
+    raise "Некорректный телеграм аккаунт"  if Student.is_telegram?(options["telegram"]) == false
     @telegram = options["telegram"]
 
-    raise "Некорректная почта"  if Student.is_mail(options["mail"]) == false
+    raise "Некорректная почта"  if Student.is_mail?(options["mail"]) == false
     @mail = options["mail"]
 
-    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github(options["github"]) == false
+    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github?(options["github"]) == false
     @github = options["github"]
+
   end
 
 #Получить фамилию и инициалы, гитхаб (при наличии) и один из контактов (при наличии)
