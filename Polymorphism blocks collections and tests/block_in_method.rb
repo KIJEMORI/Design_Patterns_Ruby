@@ -34,11 +34,19 @@ def count_of_min(massive)
   yield (massive.map{|x| x.to_i}.select{|x| x == massive.min}.count)
 end
 
+# 1.54. 
+# Для введенного списка построить список из элементов, встречающихся в исходном более трех раз.
+
+def list_of_item_count_more_3(list)
+  yield (list.select{|x| list.count(x) > 3}.uniq.sort)
+end
+
 puts '1) заполнить список'
 puts '2) циклический сдвиг вправо на две позиции целочисленный массив'
 puts '3) циклический сдвиг вправо на одну позицию целочисленный массив'
 puts '4) количество чётных элементов целочисленного массива'
 puts '5) количество минимальных элементов целочисленного массива'
+puts '6) список элементов встечающихся более 3 раз в списке'
 puts '0) завершение программы'
 print 'Ввод: '
 variant = gets().to_i
@@ -60,6 +68,7 @@ while variant != 0 do
   cyclic_shift_right_by_one(massive) {|thing| p thing } if variant == 3
   count_of_chet(massive) {|thing| p thing } if variant == 4
   count_of_min(massive) {|thing| p thing } if variant == 5
+  list_of_item_count_more_3(massive) {|thing| p thing} if variant == 6
   
   print 'Ввод: '
   variant = gets().to_i
