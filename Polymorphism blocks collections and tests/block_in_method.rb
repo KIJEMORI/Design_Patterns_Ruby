@@ -13,8 +13,16 @@ def cyclic_shift_right_by_two(massive)
   yield (massive.map{|x| x.to_i}.rotate(-2))
 end
 
+# 1.19	Дан целочисленный массив. 
+# Необходимо осуществить циклический сдвиг элементов массива вправо на одну позицию.
+
+def cyclic_shift_right_by_one(massive)
+  yield (massive.map{|x| x.to_i}.rotate(-1))
+end
+
 puts '1) заполнить список'
 puts '2) циклический сдвиг вправо на две позиции целочисленный массив'
+puts '3) циклический сдвиг вправо на одну позицию целочисленный массив'
 puts '0) завершение программы'
 print 'Ввод: '
 variant = gets().to_i
@@ -33,6 +41,7 @@ while variant != 0 do
     end
   end
   cyclic_shift_right_by_two(massive) {|thing| p thing } if variant == 2
+  cyclic_shift_right_by_one(massive) {|thing| p thing } if variant == 3
 
   print 'Ввод: '
   variant = gets().to_i
