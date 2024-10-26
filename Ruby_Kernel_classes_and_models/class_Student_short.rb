@@ -17,10 +17,10 @@ class Student_short < People
     super(option)
 
     @last_name_and_initials = options[:student].last_name_and_initials
-    @contact = options[:student].one_of_contacts
+    @one_of_contacts = options[:student].one_of_contacts
     
 
   end
 
-  attr_reader :last_name_and_initials, :contact
+  attr_reader :last_name_and_initials, :one_of_contacts
 end

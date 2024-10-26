@@ -22,7 +22,7 @@ class People
       elsif type != "github"
         "; #{type.capitalize}: #{value}" if value != nil
       end
-    end.join(" ").gsub("  ", " ").gsub(" ;", ";").sub(" ", "")
+    end.join(" ").gsub("  ", " ").gsub(" ;", ";").sub(" ", "").gsub('_',' ')
 
     
     information += "; #{"github".capitalize}: #{@github}" if @github != nil
@@ -31,6 +31,10 @@ class People
   end
 
   def last_name_and_initials
+
+  end
+
+  def one_of_contacts
 
   end
 end
