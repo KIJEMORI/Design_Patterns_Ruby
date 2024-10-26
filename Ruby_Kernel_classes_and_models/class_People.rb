@@ -2,14 +2,15 @@
 class People
   def initialize(options = {id: nil, "github": nil})
     @id = options[:id]
-    raise "Некорректная ссылка на гитхаб аккаунт"  if People.is_github?(options["github"]) == false
-    @github = options["github"]
+    self.github= (options)
   end
 
   def People.is_github? (maybe_github)
     regex = /  ^https: \/ \/ github\.com \/ [a-zA-Z\d\_\-]{5,32} $  /x
     maybe_github.match?(regex) if maybe_github != nil
   end
+
+  
 
   attr_reader :id, :github
 #Получение полной информации исходя из переменной объекта класса
@@ -36,5 +37,12 @@ class People
 
   def one_of_contacts
 
+  end
+
+  
+  private
+  def github= (options={"github": @github}) 
+    raise "Некорректная ссылка на гитхаб аккаунт"  if People.is_github?(options["github"]) == false
+    @github = options["github"]
   end
 end

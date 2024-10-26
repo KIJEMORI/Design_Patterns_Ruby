@@ -71,6 +71,11 @@ class  Student < People
     return false
   end
 #Метод задающий или меняющий контакты
+  def student_github=(options)
+    self.github=(options)
+  end
+
+
   def contacts=(options = {"phone": @phone, "telegram": @telegram, "mail": @mail, "github": @github})
     
     raise "Некорректный номер телефона"  if Student.is_phone?(options["phone"]) == false
@@ -82,8 +87,7 @@ class  Student < People
     raise "Некорректная почта"  if Student.is_mail?(options["mail"]) == false
     @mail = options["mail"]
 
-    raise "Некорректная ссылка на гитхаб аккаунт"  if Student.is_github?(options["github"]) == false
-    @github = options["github"]
+   self.student_github = options
 
   end
 
