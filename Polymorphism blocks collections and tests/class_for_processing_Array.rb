@@ -55,6 +55,22 @@ class Processing
 
     return new_array
   end
+
+  def select()
+    return nil if @array.nil? || @array.empty?
+
+    new_array = @array.clone()
+    not_our_item = []
+
+
+    for item in new_array
+      if !yield(item)
+        not_our_item.append(item)
+      end
+    end
+
+    return new_array - not_our_item
+  end
   
   def to_s()
     @array.to_s
@@ -72,3 +88,5 @@ p array_1.drop_while!(){|x| x != 3}
 p array_1.max(){|a,b| a <=> b}
 
 p array_1.sort!(){|a,b| a < b}
+
+p array_1.select(){|x| x > 3}
