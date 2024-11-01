@@ -71,6 +71,19 @@ class Processing
 
     return new_array - not_our_item
   end
+
+  def map ()
+
+    return nil if @array.nil? || @array.empty?
+    new_array = @array.clone()
+
+    for index in 0...new_array.size()
+      new_array[index] = yield(new_array[index])
+    end
+
+    return new_array
+
+  end
   
   def to_s()
     @array.to_s
@@ -90,3 +103,5 @@ p array_1.max(){|a,b| a <=> b}
 p array_1.sort!(){|a,b| a < b}
 
 p array_1.select(){|x| x > 3}
+
+p array_1.map(){|x| x + 2}
