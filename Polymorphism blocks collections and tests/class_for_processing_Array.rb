@@ -25,6 +25,18 @@ class Processing
     return new_array
   end
 
+  def max()
+
+    return nil if @array.nil? || @array.empty?
+
+    max = @array[0]
+    for item in @array
+      max = item if yield(item, max) > 0
+    end
+
+    return max
+  end
+  
   def to_s()
     @array.to_s
   end
@@ -37,3 +49,5 @@ array = [1,2,3,4,5,6,1,3,5,3,567,12]
 array_1 = Processing.new(array)
 
 p array_1.drop_while!(){|x| x != 3}
+
+p array_1.max(){|a,b| a <=> b}
