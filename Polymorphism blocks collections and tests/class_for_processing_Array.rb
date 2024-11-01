@@ -36,6 +36,25 @@ class Processing
 
     return max
   end
+
+  def sort!()
+
+    return nil if @array.nil? || @array.empty?
+
+    new_array = @array.clone()
+
+    for index in 0...new_array.size()
+      for index_2 in 0...new_array.size()
+        if yield(new_array[index], new_array[index_2])
+          item_1 = new_array[index]
+          new_array[index] = new_array[index_2]
+          new_array[index_2] = item_1 
+        end
+      end
+    end
+
+    return new_array
+  end
   
   def to_s()
     @array.to_s
@@ -51,3 +70,5 @@ array_1 = Processing.new(array)
 p array_1.drop_while!(){|x| x != 3}
 
 p array_1.max(){|a,b| a <=> b}
+
+p array_1.sort!(){|a,b| a < b}
