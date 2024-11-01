@@ -3,8 +3,7 @@ require_relative 'class_People'
 class Student_short < People
 
   def initialize(options ={student: nil, info: nil, id: nil})
-    
-
+  
     if(!options[:student] && options[:info]!=nil) then
       options[:student] = options[:info].to_Student
     end
@@ -18,8 +17,16 @@ class Student_short < People
 
     @last_name_and_initials = options[:student].last_name_and_initials
     @one_of_contacts = options[:student].one_of_contacts
-    
 
+  end
+  
+  def validate? 
+    return (validate_github? && validate_contact?)
+  end
+
+  def validate_contact?
+    return true if @one_of_contacts != nil
+    return false
   end
 
   attr_reader :last_name_and_initials, :one_of_contacts
