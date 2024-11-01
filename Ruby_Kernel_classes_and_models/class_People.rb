@@ -2,15 +2,14 @@
 class People
   def initialize(options = {id: nil, "github": nil})
     @id = options[:id]
-    self.github= (options)
+    raise "Некорректная ссылка на гитхаб аккаунт"  if People.is_github?(options["github"]) == false
+    @github = options["github"]
   end
 
   def People.is_github? (maybe_github)
     regex = /  ^https: \/ \/ github\.com \/ [a-zA-Z\d\_\-]{5,32} $  /x
     maybe_github.match?(regex) if maybe_github != nil
   end
-
-  
 
   attr_reader :id, :github
 #Получение полной информации исходя из переменной объекта класса
@@ -30,7 +29,7 @@ class People
     
     return information
   end
-
+# поднятие метода, обязательно определён но не обязательно реализован
   def last_name_and_initials
 
   end
@@ -39,10 +38,18 @@ class People
 
   end
 
-  
-  private
-  def github= (options={"github": @github}) 
-    raise "Некорректная ссылка на гитхаб аккаунт"  if People.is_github?(options["github"]) == false
-    @github = options["github"]
+#Методы подтверждения наличия гита или контакта у студента
+  def validate? 
+    
   end
+
+  def validate_github?
+    return true if @github != nil
+    return false
+  end
+
+  def validate_contact?
+    
+  end
+
 end
