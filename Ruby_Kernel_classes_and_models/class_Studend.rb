@@ -3,9 +3,9 @@ require_relative 'class_People'
 
 class  Student < People
 #Конструктор
-  def initialize( last_name, first_name, surname = nil, options={ "phone": nil, "telegram":nil, "mail":nil, "github":nil, id: nil})
+  def initialize(options={last_name: ,first_name: , surname: nil,"phone": nil, "telegram":nil, "mail":nil, "github":nil, id: nil})
     super(options)
-    self.name= ({last_name: last_name, first_name: first_name, surname: surname})
+    self.name= ({last_name: options[:last_name], first_name: options[:first_name], surname: options[:surname]})
     self.contacts= (options)
   end
 #Сеттер фамилии, имени или отчества
@@ -61,11 +61,6 @@ class  Student < People
     return (validate_github? && validate_contact?)
   end
 
-  def validate_github?
-    return true if @github != nil
-    return false
-  end
-
   def validate_contact?
     return true if one_of_contacts != nil
     return false
@@ -82,8 +77,6 @@ class  Student < People
 
     raise "Некорректная почта"  if Student.is_mail?(options["mail"]) == false
     @mail = options["mail"]
-
-    self.github=(options)
 
   end
 
