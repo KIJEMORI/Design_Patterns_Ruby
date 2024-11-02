@@ -2,12 +2,8 @@ require_relative 'class_People'
 
 class Student_short < People
 
-  def initialize(options ={student: nil, info: nil, id: nil})
+  def initialize(options ={student: , id: nil})
   
-    if(!options[:student] && options[:info]!=nil) then
-      options[:student] = options[:info].to_Student
-    end
-    
     raise "Нет данных для заполнения объекта Student_short" if (!options[:student])
     option = Hash[]
     option[:id] = options[:id]
@@ -20,6 +16,17 @@ class Student_short < People
 
   end
   
+  def Student_short.from_info(options ={info: , id: nil})
+    
+    student = options[:info].to_Student
+  
+    option = Hash[]
+    option[:id] = options[:id]
+    option[:student] = student
+
+    new (option)
+  end
+
   def validate? 
     return (validate_github? && validate_contact?)
   end
