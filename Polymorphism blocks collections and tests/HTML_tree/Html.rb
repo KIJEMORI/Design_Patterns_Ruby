@@ -1,12 +1,49 @@
+require_relative 'Tag'
+
 class Html
+  
   def initialize(file)
     raise "Неверный файл" if !Html.html?(file)
     data_of_file = File.read(file)
     array_of_data, layers = parse_html(data_of_file)
 
+    @tree = create_tree(array_of_data, layers)
+  end
+
+  attr_reader :tree
+
+  def create_tree(array, layers)
+    tree = []
+    tree << Tag.new(array[0], layers[0])
+
+    parent_variable = 0
+
+    for index in 1...array.size
+      tag = Tag.new(array[index], layers[index])
+    
+      if layers[index] > layers[index-1]
+        tag.parent = tree[parent_variable]
+        tree[parent_variable].childs = tag
+        parent_variable = index
+      
+      elsif layers[index] < layers[index-1]
+        parent = tree[parent_variable].parent
+        for deep in 0...(layers[index-1]-layers[index])
+          parent = parent.parent
+        end
+        tag.parent = parent
+        parent.childs = tag
+        parent_variable = index
+      else
+        tag.parent = tree[parent_variable].parent
+        tree[parent_variable].parent.childs = tag
+        parent_variable = index
+      end
+      tree << tag
+      
     end
 
-    
+    return tree
   end
 # Проверка файла на тип html
   def Html.html?(maybe_html)
@@ -51,7 +88,3 @@ class Html
   end
   
 end
-
-file = 'index.html'
-
-Html.new(file)
