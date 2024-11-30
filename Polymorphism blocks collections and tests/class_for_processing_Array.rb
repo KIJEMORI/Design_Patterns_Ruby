@@ -85,7 +85,7 @@ class Processing
 
   end
 
-   def detect()
+  def detect()
 
     return nil if @array.nil? || @array.empty?
 
@@ -100,26 +100,10 @@ class Processing
     return nil
 
   end
-  
+
   def to_s()
     @array.to_s
   end
-  
+
 end
 
-# Проверка
-array = [1,2,3,4,5,6,1,3,5,3,567,12]
-
-array_1 = Processing.new(array)
-
-p array_1.drop_while!(){|x| x != 3}
-
-p array_1.max(){|a,b| a <=> b}
-
-p array_1.sort!(){|a,b| a < b}
-
-p array_1.select(){|x| x > 3}
-
-p array_1.map(){|x| x + 2}
-
-p array_1.detect(){|x| x > 3 and x < 10}
