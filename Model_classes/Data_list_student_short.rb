@@ -7,7 +7,7 @@ class Data_list_student_short < Data_list
   end
 
   def get_names
-    return ["№", "last_name_and_initials", "github", "one_of_contacts"]
+    return ["id", "last_name_and_initials", "github", "one_of_contacts"]
   end
 
   def attributes(student_short)
