@@ -1,4 +1,4 @@
-require_relative 'class_People'
+require_relative 'People'
 
 
 class  Student < People
