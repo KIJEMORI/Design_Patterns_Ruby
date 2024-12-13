@@ -3,10 +3,11 @@ require_relative 'class_People'
 
 class  Student < People
 #Конструктор
-  def initialize(options={last_name: ,first_name: , surname: nil,"phone": nil, "telegram":nil, "mail":nil, "github":nil, id: nil})
+  def initialize(options={last_name: ,first_name: , surname: nil,"phone": nil, "telegram":nil, "mail":nil, "github":nil, id: nil, date_of_birth: nil})
     super(options)
     self.name= ({last_name: options[:last_name], first_name: options[:first_name], surname: options[:surname]})
     self.contacts= (options)
+    @date_of_birth = options[:date_of_birth]
   end
 #Сеттер фамилии, имени или отчества
   def name=(options= {last_name: @last_name, first_name: @first_name, surname: @surname})
@@ -35,7 +36,7 @@ class  Student < People
   end
   
 #Геттеры в одну строчку
-  attr_reader :phone, :telegram, :mail, :last_name, :first_name, :surname
+  attr_reader :phone, :telegram, :mail, :last_name, :first_name, :surname, :date_of_birth
   
 #Метод класса провеерки регулярными выражениями входных данных, возвращает true, false или nil
   def Student.is_name?(maybe_name)
@@ -110,7 +111,16 @@ class  Student < People
     end
 
   end
-
+# Оператор сравнения
+  def <=>(object)
+    if(object > @date_of_birth)
+      return -1
+    elsif object == @date_of_birth
+      return 0
+    else
+      return 1
+    end
+  end
 end
 
 
