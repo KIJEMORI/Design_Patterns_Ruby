@@ -1,4 +1,4 @@
-class Data_list
+class Data_table
 
   def initialize(data)
       @matrix = data
