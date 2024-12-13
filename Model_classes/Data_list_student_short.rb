@@ -2,8 +2,8 @@ require_relative 'Student_short'
 require_relative 'Data_list'
 class Data_list_student_short < Data_list
 
-  def initialize()
-    super()
+  def initialize(data)
+    super(data)
   end
 
   def get_names
