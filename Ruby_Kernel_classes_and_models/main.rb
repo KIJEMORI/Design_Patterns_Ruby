@@ -1,6 +1,8 @@
-require_relative 'class_People'
-require_relative 'class_Studend'
-require_relative 'class_Student_short'
+require_relative 'People'
+require_relative 'Studend'
+require_relative 'Student_short'
+require_relative 'double_tree'
+require_relative 'Data_list_student_short'
 
 class String
   #Функция класса String для создания переменной класса Student из строки
@@ -35,7 +37,11 @@ class String
         end
       end
       
-      return Student.new(fio[0], fio[1], fio[2], hash)
+      hash[:last_name] = fio[0]
+      hash[:first_name] = fio[1]
+      hash[:surname] = fio[2]
+
+      return Student.new(hash)
     end
   end
   
@@ -97,10 +103,24 @@ Students = read_from_txt("list_students.rb")
 
 Students.each {|n| puts n}
 
-std = Student_short.new(student: Students[0])
-puts std
-std = Student_short.new(info: "Аврелий Майски Доводчик; phone: 88005553535")
-puts std
+puts('---------------')
 
-std = "БЛабла Должен".to_Student
-puts std
+# std = Student_short.new(student: Students[0])
+# puts std
+# std = Student_short.from_info(info: "Аврелий Майски Доводчик; phone: 88005553535")
+# puts std
+
+# Students.each{|x| Double_tree.new(x)}
+
+# puts Double_tree.sorted_students(Double_tree.start_with())
+
+students_short = []
+
+Students.each {|x| students_short << Student_short.new(student: x)}
+
+# students_short.each {|x| puts x}
+
+dlsh = Data_list_student_short.new(students_short)
+
+data = dlsh.get_data()
+p (dlsh.get_names)
