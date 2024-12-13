@@ -54,7 +54,6 @@ class Html
   def parse_html(html_string)
     stack = []
     array_for_data = []
-    current_parent = nil
     array_of_layers = []
     layer = 0
     array_of_data = html_string.scan(/<[^>]+>|[^<]+/).map(){|x| x.strip}
@@ -87,4 +86,17 @@ class Html
     return array_for_data, array_of_layers
   end
   
+  def select()
+    return nil if @tree.nil? || @tree.empty?
+
+    new_array = []
+
+    for item in @tree
+      if yield(item)
+        new_array << item
+      end
+    end
+
+    return new_array
+  end
 end
