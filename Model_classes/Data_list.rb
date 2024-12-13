@@ -2,10 +2,14 @@ require_relative 'Data_table'
 
 class Data_list
 
-  def initialize(data):
-    @array = data
+  def initialize(data)
+    self.array = data
 
     @selected = []
+  end
+
+  def array =(data)
+    @array = data
   end
 
   def select(number)
@@ -33,15 +37,15 @@ class Data_list
   def get_data()
 
     table = []
-    for index in 0..@array.size()
-      table << ([index] + attributes())
+    for index in 0...@array.size()
+      table << ([index+1] + attributes(@array[index]))
     end
 
     return Data_table.new(table)
-    
+
   end
 
-  def attributes()
+  def attributes(item)
     raise NotImplementedError, "Не реализован"
   end
 
