@@ -3,7 +3,7 @@ require_relative 'People'
 
 class  Student < People
 #Конструктор
-  def initialize(options={last_name: ,first_name: , surname: nil,"phone": nil, "telegram":nil, "mail":nil, "github":nil, id: nil, date_of_birth: nil})
+  def initialize(options={last_name: ,first_name: , surname: nil, phone: nil,  telegram:nil, mail:nil, github:nil, id: nil, date_of_birth: nil})
     super(options)
     self.name= ({last_name: options[:last_name], first_name: options[:first_name], surname: options[:surname]})
     self.contacts= (options)
@@ -68,16 +68,16 @@ class  Student < People
   end
 #Метод задающий или меняющий контакты
 
-  def contacts=(options = {"phone": @phone, "telegram": @telegram, "mail": @mail, "github": @github})
+  def contacts=(options = {phone: @phone, telegram: @telegram, mail: @mail, github: @github})
     
-    raise "Некорректный номер телефона"  if Student.is_phone?(options["phone"]) == false
-    @phone = options["phone"]
+    raise "Некорректный номер телефона"  if Student.is_phone?(options[:phone]) == false
+    @phone = options[:phone]
 
-    raise "Некорректный телеграм аккаунт"  if Student.is_telegram?(options["telegram"]) == false
-    @telegram = options["telegram"]
+    raise "Некорректный телеграм аккаунт"  if Student.is_telegram?(options[:telegram]) == false
+    @telegram = options[:telegram]
 
-    raise "Некорректная почта"  if Student.is_mail?(options["mail"]) == false
-    @mail = options["mail"]
+    raise "Некорректная почта"  if Student.is_mail?(options[:mail]) == false
+    @mail = options[:mail]
 
   end
 
@@ -111,15 +111,26 @@ class  Student < People
     end
 
   end
+
+  include Comparable
 # Оператор сравнения
-  def <=>(object)
-    if(object > @date_of_birth)
+  def <=> (object)
+    if(object == nil)
+      return 1
+    elsif (@date_of_birth == nil)
+      return -1
+    elsif(object > @date_of_birth)
       return -1
     elsif object == @date_of_birth
       return 0
     else
       return 1
     end
+  end
+
+  def to_h
+    { id: @id, first_name: @first_name, last_name: @last_name, surname: @surname, 
+    date_of_birth: @date_of_birth, telegram: @telegram, mail: @mail, phone: @phone, github: @github }
   end
 end
 
