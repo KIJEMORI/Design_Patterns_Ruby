@@ -1,10 +1,16 @@
 require_relative 'Student_short'
 require_relative 'Studend'
-
+require_relative 'Data_list_student_short'
 class Student_list
 
-  def initialize(file)
+  def initialize(file, data_storage_strategy)
     @file = file
+    self.data_storage_strategy = data_storage_strategy
+    @array = read()
+  end
+
+  def data_storage_strategy= (data_storage_strategy)
+    @data_storage_strategy = data_storage_strategy
   end
 
   #функция для чтения данных из файла/ Принимает адрес и имя файла / возвращает массив с элементами класса Student
@@ -15,12 +21,14 @@ class Student_list
       puts e
     end
 
-    return from(file)
+    array = from(file)
     file.close()
+
+    return array
   end
   
   def from(file)
-    raise NotImplementedError, "Не реализован"
+    @data_storage_strategy.from(file)
   end
 
   #функция запси данных в файл/ Принимает адрес и имя файла и массив с элементами класса Student
@@ -37,7 +45,7 @@ class Student_list
   end  
 
   def to(list_students, file)
-    raise NotImplementedError, "Не реализован"
+    @data_storage_strategy.to(list_students, file)
   end
 
   def search_on_id(number)

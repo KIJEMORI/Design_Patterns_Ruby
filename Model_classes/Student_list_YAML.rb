@@ -1,13 +1,10 @@
 require_relative 'Student_short'
 require_relative 'Studend'
 require_relative 'Student_list'
+require_relative 'Data_storage_strategy'
 require 'yaml'
 
-class Student_list_YAML < Student_list
-
-  def initialize(file)
-    super(file)
-  end
+class Student_list_YAML < Data_storage_strategy
 
   #функция для чтения данных из файла/ Принимает адрес и имя файла / возвращает массив с элементами класса Student
   def from(file)
@@ -15,8 +12,6 @@ class Student_list_YAML < Student_list
       text = file.read
 
       students = YAML.safe_load(text, permitted_classes: [Data, Symbol]).map{|data| Student.new(**data)}
-
-      @array = students
 
       return students
       

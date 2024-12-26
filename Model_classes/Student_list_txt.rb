@@ -2,7 +2,7 @@
 require_relative 'Student_short'
 require_relative 'Studend'
 require_relative 'Student_list'
-
+require_relative 'Data_storage_strategy'
 class String
   #Функция класса String для создания переменной класса Student из строки
     def to_Student(id = nil, string_full_info = self)
@@ -50,11 +50,7 @@ class String
     end
 end
 
-class Student_list_txt < Student_list
-
-  def initialize(file)
-    super(file)
-  end
+class Student_list_txt < Data_storage_strategy
 
   #функция для чтения данных из файла/ Принимает адрес и имя файла / возвращает массив с элементами класса Student
   def from(file)
@@ -78,8 +74,6 @@ class Student_list_txt < Student_list
           puts e
         end
       end
-
-      @array = students
       
       return students
   end

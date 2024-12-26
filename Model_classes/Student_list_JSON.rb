@@ -1,13 +1,10 @@
 require_relative 'Student_short'
 require_relative 'Studend'
 require_relative 'Student_list'
+require_relative 'Data_storage_strategy'
 require 'json'
 
-class Student_list_JSON < Student_list
-
-  def initialize(file)
-    super(file)
-  end
+class Student_list_JSON < Data_storage_strategy
 
   #функция для чтения данных из файла/ Принимает адрес и имя файла / возвращает массив с элементами класса Student
   def from(file)
@@ -15,8 +12,6 @@ class Student_list_JSON < Student_list
       text = file.read
 
       students = JSON.parse(text, symbolize_names: true).map{|data| Student.new(**data)}
-
-      @array = students
 
       return students
   end
