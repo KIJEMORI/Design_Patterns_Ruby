@@ -7,5 +7,8 @@ def db_ora_con
 end
 
 conn = db_ora_con
+create_table(conn)
+
+
 
 conn.logoff
