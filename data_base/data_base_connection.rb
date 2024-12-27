@@ -7,8 +7,19 @@ def db_ora_con
 end
 
 conn = db_ora_con
-create_table(conn)
+# create_table(conn)
 
+require_relative '../obs/Student_list_JSON'
+require_relative '../obs/Student_list'
 
+json = Student_list_JSON.new()
+
+read = Student_list.new("../obs/list_json_students.json", json)
+students = read.read()
+
+students.each do |x| 
+  puts x
+  insert_into_table_student(conn, x)
+end
 
 conn.logoff
