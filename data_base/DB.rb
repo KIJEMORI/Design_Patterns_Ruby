@@ -2,13 +2,22 @@ require_relative "../obs/Studend"
 require "oci8"
 
 class DB
+  private_class_method :new
+  @instance = nil
   def initialize(user, pass)
+    raise 'База данных уже подключёенная' if @user && @pass
 
     self.user = user
     self.pass = pass
 
+    connect()
   end
   attr_accessor :user, :pass
+
+  def DB.instance(user = nil, pass = nil)
+    @instance = new(user, pass) if @instance == nil
+    return @instance
+  end
 
   def connect()
     begin
@@ -20,6 +29,8 @@ class DB
 
   def logoff
     @conn.logoff
+    @user = nil
+    @pass = nil
   end
 
   def select_from_table(id: nil, last_name: nil, first_name: nil, surname: nil, github: nil, phone: nil, mail: nil)
