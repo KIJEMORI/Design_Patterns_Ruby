@@ -14,9 +14,68 @@ class Student_list_view < FXVerticalFrame
     @data_storage_strategy = data_storage_strategy
     super(parent, opts: LAYOUT_FILL)
     setup_table_area()
+    setup_control_buttons_area()
     setup_filtering_area()
+    
+  end
+# Установка управляющих кнопок
+  def setup_control_buttons_area
+    button_area = FXHorizontalFrame.new(self, opts: LAYOUT_FILL_X | PACK_UNIFORM_WIDTH)
+    @add_btn = FXButton.new(button_area, "Добавить", opts: BUTTON_NORMAL)
+    @update_btn = FXButton.new(button_area, "Обновить", opts: BUTTON_NORMAL)
+    @edit_btn = FXButton.new(button_area, "Изменить", opts: BUTTON_NORMAL)
+    @delete_btn = FXButton.new(button_area, "Удалить", opts: BUTTON_NORMAL)
+    @add_btn.connect(SEL_COMMAND) { on_add() }
+    @update_btn.connect(SEL_COMMAND) { on_update() }
+    @edit_btn.connect(SEL_COMMAND) { on_edit() }
+    @delete_btn.connect(SEL_COMMAND) { on_delete() }
+    @table.connect(SEL_SELECTED) { update_button_states() }
+    @table.connect(SEL_DESELECTED) { update_button_states() }
+    update_button_states()
   end
 
+  def update_button_states
+    selected_rows = get_selected_rows()
+  
+    @add_btn.enabled = true
+    @update_btn.enabled = true
+  
+    case selected_rows.size
+    when 0
+      @edit_btn.enabled = false
+      @delete_btn.enabled = false
+    when 1
+      @edit_btn.enabled = true
+      @delete_btn.enabled = true
+    else
+      @edit_btn.enabled = false
+      @delete_btn.enabled = true
+    end
+  end
+
+  def on_add
+    raise 'NotImpicated'
+  end
+  
+  def on_update
+    raise 'NotImpicated'
+  end
+  
+  def on_edit
+    raise 'NotImpicated'
+  end
+  
+  def on_delete
+    raise 'NotImpicated'
+  end
+# Получить выделенные строки(ПОТОМ)
+  def get_selected_rows
+    selected_rows = []
+    (0...@table.numRows).each do |row|
+      selected_rows << row if @table.rowSelected?(row)
+    end
+    return selected_rows
+  end
 # Установка фильтрующих боксов
   def setup_filtering_area
     filtering_area = FXVerticalFrame.new(self, opts: LAYOUT_FILL_X | LAYOUT_SIDE_TOP)
@@ -106,7 +165,7 @@ class Student_list_view < FXVerticalFrame
     return if @data.nil? || @data.count_row <= 1
 
     (0...@data.count_column).each do |col_index|
-      self.table.setColumnText(col_index, @names[col_index].to_s)
+      @table.setColumnText(col_index, @names[col_index].to_s)
     end
     clear_table()
 
