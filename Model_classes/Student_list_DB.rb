@@ -6,16 +6,16 @@ require_relative 'Data_storage_strategy'
 require_relative '../DB/DB'
 
 
-class Student_list_DB < DB
+class Student_list_DB
 
     def initialize (user, pass)
-        super(user, pass)
+        DB.instance(user, pass)
         select_all_rows()
     end
 
     def select_all_rows()
         students = []
-        array = select_from_table()
+        array = DB.instance.select_from_table()
         array.each do |x|
             hash = {}
             hash[:id] = x[0]
