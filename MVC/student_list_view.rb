@@ -118,7 +118,26 @@ class Student_list_view < FXVerticalFrame
 
   end
 
-  attr_accessor :table, :data, :page_label
+  def set_table_params(column_names, whole_entities_count) 
+    @table.setTableSize(whole_entities_count, column_names.size())
+
+    (0...column_names.size()).each do |col_index|
+      @table.setColumnText(col_index, column_names[col_index].to_s)
+    end
+  end
+
+  def set_table_data(data)
+    return if data.nil? || data.size < 1
+    
+    data.each_with_index do |row, row_index|
+      row.each_with_index do |cell, col_index|
+        @table.setItemText(row_index, col_index, cell.to_s)
+      end
+    end
+    
+  end
+
+  attr_accessor :table, :page_label
 
 #Геттеры и сеттеры
   private

@@ -2,10 +2,11 @@ require_relative "../obs/Student_list.rb"
 
 class Student_list_controller
 
-  ROWS_PER_PAGE = 2
+  ROWS_PER_PAGE = 1
 
   def initialize(strategy)
     @strategy = Student_list.new(strategy)
+    @sort_parametr =  {id: nil, last_name: nil, first_name: nil, surname: nil, github: nil, phone: nil, mail: nil, telegram: nil, sort_column: nil, sort: "ASC" }
   end
 
   attr_accessor :view
@@ -26,55 +27,36 @@ class Student_list_controller
     @strategy = Student_list.new(data_storage_strategy) if !@strategy && data_storage_strategy != nil
     @strategy.data_storage_strategy = data_storage_strategy if @strategy && data_storage_strategy != nil
 
-    data_list = @strategy.get_k_n_student_short_list(@current_page-1, ROWS_PER_PAGE)
-    # students_short = []
-    # for student in students
-    #   students_short << Student_short.new(student: student)
-    # end
+    @data = get_page_data(@current_page)
+    @data_list.view = @view
 
-    # data_list = Data_list_student_short.new(students_short)
-    
-    @view.data = data_list.get_data()
-    @names = data_list.get_names()
- 
-    @view.table.setTableSize(ROWS_PER_PAGE, @names.size)
+    @data_list.notify(ROWS_PER_PAGE, @data)
 
     self.total_pages = ((@strategy.get_student_short_count()).to_f / ROWS_PER_PAGE).ceil
-    
-
-    update_table()
+    @view.page_label.text = "Страница: #{@current_page}/#{@total_pages}"
   end
 
-  attr_accessor :total_pages, :current_page, :sort_order
+  attr_accessor :total_pages, :current_page, :sort_order, :data
 
   def switch_page(direction)
     new_page = @current_page + direction
-    p new_page
-    
     return if new_page < 1 || new_page > @total_pages
     @current_page = new_page
-    p @current_page
     update_table()
   end
 
   def update_table(sorted_data = nil)
 
-    return if @view.data.nil? || @view.data.count_row < 1
-
-    (0...@view.data.count_column).each do |col_index|
-      @view.table.setColumnText(col_index, @names[col_index].to_s)
-    end
+    self.total_pages = ((@strategy.get_student_short_count()).to_f / ROWS_PER_PAGE).ceil
     
     clear_table()
 
     data_to_display = sorted_data || get_page_data(@current_page)
-    data_to_display.each_with_index do |row, row_index|
-      row.each_with_index do |cell, col_index|
-        @view.table.setItemText(row_index, col_index, cell.to_s)
-      end
-    end
+    
+    @data_list.notify(ROWS_PER_PAGE, data_to_display)
 
     @view.page_label.text = "Страница: #{@current_page}/#{@total_pages}"
+
   end
 
   def get_page_data(page_number)
@@ -82,16 +64,18 @@ class Student_list_controller
     end_index = ROWS_PER_PAGE - 1
     data_page = []
 
-    data_list = @strategy.get_k_n_student_short_list(@current_page-1, ROWS_PER_PAGE)
-    
-    @view.data = data_list.get_data
+    @data_list = @strategy.get_k_n_student_short_list(@current_page-1, ROWS_PER_PAGE, @sort_parametr)
+    @data_list.view = @view
+
+
+    @data = @data_list.get_data
     
     (start_index..end_index).each do |row_index|
-      break if row_index >= @view.data.count_row
+      break if row_index >= @data.count_row
       row = []
-      (0...@view.data.count_column).each do |col_index|
+      (0...@data.count_column).each do |col_index|
         
-        row << @view.data.get(row_index, col_index)
+        row << @data.get(row_index, col_index)
       end
       
       data_page << row
@@ -102,7 +86,7 @@ class Student_list_controller
 
   def clear_table
     (0...ROWS_PER_PAGE).each do |row_index|
-      (0...@view.data.count_column).each do |col_index|
+      (0...@data_list.count).each do |col_index|
         @view.table.setItemText(row_index, col_index, "")
       end
     end
@@ -110,22 +94,50 @@ class Student_list_controller
 
   # sort
   def sort_table_by_column(column_index)
-    return if @view.data.nil? || @view.data.count_row <= 1
 
-    rows = (0...@view.data.count_row).map do |row_index|
-      (0...@view.data.count_column).map { |col_index| @view.data.get(row_index, col_index)}
+    begin
+
+      names = @data_list.get_names()
+      check = @sort_parametr[:sort_column]
+      @sort_parametr[:sort_column] = names[column_index]
+
+      if check == names[column_index]
+        
+        if @sort_parametr[:sort] == "ASC"
+          @sort_parametr[:sort] = "DESC"
+        elsif @sort_parametr[:sort] == "DESC"
+          @sort_parametr[:sort] = "ASC" 
+        end
+      else
+        @sort_parametr[:sort] = "ASC" 
+      end
+      
+      update_table()
+
+      
+
+    rescue
+      
+      return if @data.nil? || @data.count_row <= 1
+      
+      rows = (0...@data.count_row).map do |row_index|
+        (0...@data.count_column).map { |col_index| @data.get(row_index, col_index)}
+      end
+      
+      self.sort_order ||= {}
+      self.sort_order[column_index] = !sort_order.fetch(column_index, false)
+
+      sorted_rows = rows.sort_by { |row| row[column_index] || ""}
+      sorted_rows.reverse! unless self.sort_order[column_index]
+
+      all_rows = sorted_rows
+
+      @data = Data_table.new(all_rows)
+
+      update_table(all_rows)
     end
 
-    self.sort_order ||= {}
-    self.sort_order[column_index] = !sort_order.fetch(column_index, false)
-
-    sorted_rows = rows.sort_by { |row| row[column_index] || ""}
-    sorted_rows.reverse! unless self.sort_order[column_index]
-
-    all_rows = sorted_rows
-
-    @view.data = Data_table.new(all_rows)
-    update_table()
+    
   end
 
 
