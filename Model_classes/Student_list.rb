@@ -1,58 +1,43 @@
 require_relative 'Student_short'
 require_relative 'Studend'
 require_relative 'Data_list_student_short'
+
 class Student_list
 
-  def initialize(file, data_storage_strategy)
-    @file = file
+  def initialize(data_storage_strategy)
     self.data_storage_strategy = data_storage_strategy
-    @array = read()
   end
 
   def data_storage_strategy= (data_storage_strategy)
     @data_storage_strategy = data_storage_strategy
   end
 
+
+
   #функция для чтения данных из файла/ Принимает адрес и имя файла / возвращает массив с элементами класса Student
   def read()
-    begin
-      file = File.open(@file,"r")
-    rescue => e
-      puts e
-    end
+    @data_storage_strategy.open()
+    @array = @data_storage_strategy.from()
+    @data_storage_strategy.close()
 
-    array = from(file)
-    file.close()
-
-    return array
-  end
-  
-  def from(file)
-    @data_storage_strategy.from(file)
+    return @array
   end
 
   #функция запси данных в файл/ Принимает адрес и имя файла и массив с элементами класса Student
   def write(list_students)
-    begin
-      file = File.open(@file,"w")
-    rescue => e
-      puts e
-    end
+    @data_storage_strategy.open()
 
-    to(list_students, file)
+    @data_storage_strategy.to(list_students)
 
-    file.close()
+    @data_storage_strategy.close()
   end  
-
-  def to(list_students, file)
-    @data_storage_strategy.to(list_students, file)
-  end
 
   def search_on_id(number)
     return @array.select(){|x| x.id == number}
   end
 
   def get_k_n_student_short_list(k, n, data_list = nil)
+    read = read()
 
     raise "Нет такого количества объктов n" if n > @array.size()
     
@@ -61,17 +46,19 @@ class Student_list
     raise "Нет такого количества страниц" if k > qty
 
     students_short = []
+
     for index in 0...n
-      item = @array[(k-1)*n + index]
-      if (item != nil) 
-        std = Student_short.new(item) 
+      item = @array[k*n + index]
+
+      if (item) 
+        std = Student_short.new(student: item, id: item.id) 
       else 
         next
       end
-      std.id = index
+      # std.id = index
+
       students_short << std
     end
-
     return Data_list_student_short.new(students_short)
 
   end
@@ -90,9 +77,7 @@ class Student_list
   end
 
   def replace_student_by_id(id, student)
-
     @array.select{|x| x.id == id}.map{|x| x = student} 
-
   end
 
   def delete_student_by_id(id)
