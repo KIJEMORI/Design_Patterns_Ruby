@@ -7,51 +7,40 @@ include Fox
 
 class Student_list_view < FXVerticalFrame
 
-  ROWS_PER_PAGE = 20
-
-  def initialize(parent, file, data_storage_strategy)
-    @file = file
-    @data_storage_strategy = data_storage_strategy
+  def initialize(parent)
     super(parent, opts: LAYOUT_FILL)
+    
+  end
+
+  attr_accessor :controller
+
+  def start_view()
     setup_table_area()
+    @controller.populate_table()
+
     setup_control_buttons_area()
     setup_filtering_area()
-    
   end
 # Установка управляющих кнопок
   def setup_control_buttons_area
     button_area = FXHorizontalFrame.new(self, opts: LAYOUT_FILL_X | PACK_UNIFORM_WIDTH)
     @add_btn = FXButton.new(button_area, "Добавить", opts: BUTTON_NORMAL)
-    @update_btn = FXButton.new(button_area, "Обновить", opts: BUTTON_NORMAL)
     @edit_btn = FXButton.new(button_area, "Изменить", opts: BUTTON_NORMAL)
     @delete_btn = FXButton.new(button_area, "Удалить", opts: BUTTON_NORMAL)
+    @update_btn = FXButton.new(button_area, "Обновить", opts: BUTTON_NORMAL)
     @add_btn.connect(SEL_COMMAND) { on_add() }
     @update_btn.connect(SEL_COMMAND) { on_update() }
     @edit_btn.connect(SEL_COMMAND) { on_edit() }
     @delete_btn.connect(SEL_COMMAND) { on_delete() }
-    @table.connect(SEL_SELECTED) { update_button_states() }
-    @table.connect(SEL_DESELECTED) { update_button_states() }
-    update_button_states()
+    @table.connect(SEL_SELECTED) { @controller.update_button_states() }
+    @table.connect(SEL_DESELECTED) { @controller.update_button_states() }
+    @edit_btn.enabled = false
+    @delete_btn.enabled = false
+
+    @controller.update_button_states()
   end
 
-  def update_button_states
-    selected_rows = get_selected_rows()
-  
-    @add_btn.enabled = true
-    @update_btn.enabled = true
-  
-    case selected_rows.size
-    when 0
-      @edit_btn.enabled = false
-      @delete_btn.enabled = false
-    when 1
-      @edit_btn.enabled = true
-      @delete_btn.enabled = true
-    else
-      @edit_btn.enabled = false
-      @delete_btn.enabled = true
-    end
-  end
+  attr_accessor :add_btn, :edit_btn, :delete_btn, :update_btn
 
   def on_add
     raise 'NotImpicated'
@@ -68,14 +57,7 @@ class Student_list_view < FXVerticalFrame
   def on_delete
     raise 'NotImpicated'
   end
-# Получить выделенные строки(ПОТОМ)
-  def get_selected_rows
-    selected_rows = []
-    (0...@table.numRows).each do |row|
-      selected_rows << row if @table.rowSelected?(row)
-    end
-    return selected_rows
-  end
+
 # Установка фильтрующих боксов
   def setup_filtering_area
     filtering_area = FXVerticalFrame.new(self, opts: LAYOUT_FILL_X | LAYOUT_SIDE_TOP)
@@ -119,7 +101,7 @@ class Student_list_view < FXVerticalFrame
     @table.rowHeaderMode = LAYOUT_FIX_WIDTH
     @table.rowHeaderWidth = 25
     @table.columnHeaderHeight = 30
-    table.columnHeaderMode = LAYOUT_FIX_HEIGHT
+    @table.columnHeaderMode = LAYOUT_FIX_HEIGHT
 
 
     @controls = FXHorizontalFrame.new(table_area, opts: LAYOUT_FILL_X)
@@ -127,108 +109,19 @@ class Student_list_view < FXVerticalFrame
     @page_label = FXLabel.new(@controls, "Страница: 1/1", opts: LAYOUT_CENTER_X)
     @next_btn = FXButton.new(@controls, ">", opts: BUTTON_NORMAL | LAYOUT_RIGHT)
 
-    @prev_btn.connect(SEL_COMMAND) { switch_page(-1) }
-    @next_btn.connect(SEL_COMMAND) { switch_page(1) }
+    @prev_btn.connect(SEL_COMMAND) { @controller.switch_page(-1) }
+    @next_btn.connect(SEL_COMMAND) { @controller.switch_page(1) }
+
     @table.columnHeader.connect(SEL_COMMAND) do |_, _, column_index|
-      sort_table_by_column(column_index)
+      @controller.sort_table_by_column(column_index)
     end
 
-    populate_table()
   end
+
+  attr_accessor :table, :data, :page_label
+
 #Геттеры и сеттеры
   private
-  attr_accessor :table, :data, :total_pages, :current_page, :page_label, :prev_btn, :next_btn, :sort_order
-# Размещение данных в таблице при чтении из JSON файла
-  def populate_table
-    read = Student_list.new(@file, @data_storage_strategy)
-    students = read.read()
-    
-    students_short = []
-    for student in students
-      students_short << Student_short.new(student: student)
-    end
-
-    data_list = Data_list_student_short.new(students_short)
-    
-    
-    @data = data_list.get_data()
-    @names = data_list.get_names()
-    @table.setTableSize(ROWS_PER_PAGE, @names.size)
-
-    self.total_pages = ((@data.count_row - 1).to_f / ROWS_PER_PAGE).ceil
-    @current_page = 1
-
-    update_table()
-  end
-
-  def update_table(sorted_data = nil)
-    return if @data.nil? || @data.count_row <= 1
-
-    (0...@data.count_column).each do |col_index|
-      @table.setColumnText(col_index, @names[col_index].to_s)
-    end
-    clear_table()
-
-    data_to_display = sorted_data || get_page_data(self.current_page)
-    data_to_display.each_with_index do |row, row_index|
-      row.each_with_index do |cell, col_index|
-        @table.setItemText(row_index, col_index, cell.to_s)
-      end
-    end
-
-    @page_label.text = "Страница: #{@current_page}/#{@total_pages}"
-  end
-
-  def clear_table
-    (0...ROWS_PER_PAGE).each do |row_index|
-      (0...@data.count_column).each do |col_index|
-        @table.setItemText(row_index, col_index, "")
-      end
-    end
-  end
-
-
-  def get_page_data(page_number)
-    start_index = (page_number - 1) * ROWS_PER_PAGE
-    end_index = start_index + ROWS_PER_PAGE - 1
-    data_page = []
-
-    (start_index..end_index).each do |row_index|
-      break if row_index >= @data.count_row
-      row = []
-      (0...@data.count_column).each do |col_index|
-        row << @data.get(row_index, col_index)
-      end
-      data_page << row
-    end
-    data_page
-  end
-
-
-  def switch_page(direction)
-    new_page = @current_page + direction
-    return if new_page < 1 || new_page > @total_pages
-    self.current_page = new_page
-    update_table()
-  end
-
-  # sort
-  def sort_table_by_column(column_index)
-    return if @data.nil? || @data.count_row <= 1
-
-    rows = (0...@data.count_row).map do |row_index|
-      (0...@data.count_column).map { |col_index| @data.get(row_index, col_index)}
-    end
-
-    self.sort_order ||= {}
-    self.sort_order[column_index] = !sort_order.fetch(column_index, false)
-
-    sorted_rows = rows.sort_by { |row| row[column_index] || ""}
-    sorted_rows.reverse! unless self.sort_order[column_index]
-
-    all_rows = sorted_rows
-
-    @data = Data_table.new(all_rows)
-    update_table()
-  end
+  attr_accessor :total_pages,   :prev_btn, :next_btn, :sort_order
+  
 end
