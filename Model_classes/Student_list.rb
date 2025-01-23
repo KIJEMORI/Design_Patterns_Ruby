@@ -12,8 +12,6 @@ class Student_list
     @data_storage_strategy = data_storage_strategy
   end
 
-
-
   #функция для чтения данных из файла/ Принимает адрес и имя файла / возвращает массив с элементами класса Student
   def read()
     @data_storage_strategy.open()
@@ -36,29 +34,22 @@ class Student_list
     return @array.select(){|x| x.id == number}
   end
 
-  def get_k_n_student_short_list(k, n, data_list = nil)
-    read = read()
-
-    raise "Нет такого количества объктов n" if n > @array.size()
+  def get_k_n_student_short_list(k, n, params, sort_id = nil, data_list = nil)
     
-    qty = (@array.size()/n).to_i
-
-    raise "Нет такого количества страниц" if k > qty
-
+    array = @data_storage_strategy.get_k_n_student_short_list(k, n, params, sort_id)
+    
     students_short = []
-
     for index in 0...n
-      item = @array[k*n + index]
+      item = array[index]
 
       if (item) 
         std = Student_short.new(student: item, id: item.id) 
       else 
         next
       end
-      # std.id = index
-
       students_short << std
     end
+
     return Data_list_student_short.new(students_short)
 
   end
@@ -85,7 +76,13 @@ class Student_list
   end
 
   def get_student_short_count()
-    @array.size()
+    begin
+      item = @data_storage_strategy.get_student_short_count()[0]["count"]
+      return item
+    rescue
+      item = @data_storage_strategy.get_student_short_count()
+      return item
+    end
   end
 
 end

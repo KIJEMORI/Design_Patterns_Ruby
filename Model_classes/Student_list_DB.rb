@@ -12,6 +12,7 @@ class Student_list_DB
     self.user = user
     self.pass = pass
     self.database = database
+    open()
   end
 
 
@@ -27,28 +28,29 @@ class Student_list_DB
 
   end
 
-  def select ( id: nil, last_name: nil, first_name: nil, surname: nil, github: nil, phone: nil, mail: nil, telegram: nil, limit: nil, offset: nil)
+  def select ( parameters_select = {id: nil, last_name: nil, first_name: nil, surname: nil, github: nil, phone: nil, mail: nil, telegram: nil, limit: nil, offset: nil, sort_column: nil, sort: "ASC"})
 
     command = 'select * from STUDENT'
 
     where = ' where '
-    where += "id = #{id}" if id
-    where += "last_name = #{last_name}" if last_name
-    where += "first_name = #{first_name}" if first_name
-    where += "surname = #{surname}" if surname
-    where += "github = #{github}" if github
-    where += "phone = #{phone}" if phone 
-    where += "mail = #{mail}" if mail
-    where += "telegram = #{telegram}" if telegram
+    where += "id = #{parameters_select[:id]}" if parameters_select[:id]
+    where += "last_name = #{parameters_select[:last_name]}" if parameters_select[:last_name]
+    where += "first_name = #{parameters_select[:first_name]}" if parameters_select[:first_name]
+    where += "surname = #{parameters_select[:surname]}" if parameters_select[:surname]
+    where += "github = #{parameters_select[:github]}" if parameters_select[:github]
+    where += "phone = #{parameters_select[:phone]}" if parameters_select[:phone]
+    where += "mail = #{parameters_select[:mail]}" if parameters_select[:mail]
+    where += "telegram = #{parameters_select[:telegram]}" if parameters_select[:telegram]
     
 
     if where != " where "
       command += where 
     end
 
-    command += "limit #{limit}" if limit
-    commant += "offset #offset" if offset
+    command += " order by #{parameters_select[:sort_column]} #{parameters_select[:sort]}" if parameters_select[:sort_column]
 
+    command += " limit #{parameters_select[:limit]} " if parameters_select[:limit]
+    command += " offset #{parameters_select[:offset]} " if parameters_select[:offset]
 
     return parse_select(DB.instance.select_from_table(command))
   end
@@ -110,22 +112,13 @@ class Student_list_DB
     return parse_select(DB.instance.select_from_table(command))
   end
   
-  def get_k_n_student_short_list(k, n, data_list = nil, parameters_select = {id: nil, last_name: nil, first_name: nil, surname: nil, github: nil, phone: nil, mail: nil, telegram: nil})
-    
-    array = select(limit: n, offset: k*n)
-    
-    students_short = []
-    for index in 0...n
-      item = array[k*n + index]
-      if (item != nil) 
-        std = Student_short.new(item) 
-      else 
-        next
-      end
-      students_short << std
-    end
+  def get_k_n_student_short_list(k, n, parameters_select = {id: nil, last_name: nil, first_name: nil, surname: nil, github: nil, phone: nil, mail: nil, telegram: nil, sort_column: nil, sort: "ASC" }, data_list = nil)
 
-    return Data_list_student_short.new(students_short)
+    parameters_select[:limit] = n
+    parameters_select[:offset] = k*n
+    p parameters_select
+    array = select(parameters_select)
+    return array
   
   end
   
@@ -176,6 +169,7 @@ class Student_list_DB
       students << Student.new(x)
     end
     # array_new = students
+    
     return students
   end
 
