@@ -1,0 +1,25 @@
+<h1>Добавить медикамент</h1>
+
+<%= form_with model: @medicine do |med| %>
+<div>
+    <div style = 'margin-bottom: 5px'>
+    Название медикамента
+    </div>
+    <%= med.text_field :name, required:true, minlength:2, placeholder: "Ибупрофен"%>
+</div>
+<div>
+    <div style = 'margin-bottom: 5px; margin-top: 5px'>
+    Состав
+    </div>
+    <%= med.text_field :compound, required:true, minlength:2%>
+</div>
+<div>
+    <div style = 'margin-bottom: 5px; margin-top: 5px'>
+    Годен до
+    </div>
+    <%= med.date_field :best_before_date, required:true%>
+</div>
+<div style = "margin-top: 20px">
+<%= med.submit "Добавить" %>
+<div>
+<% end %>

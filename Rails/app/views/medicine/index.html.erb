@@ -1,0 +1,39 @@
+<h1> Препараты </h>
+
+<style>
+    th, td{
+        border: 2px solid #000000;
+        padding: 5px;
+        margin: 0px;
+    }
+</style>
+
+<table style = 'background: #d6d2a9; border: 2px solid #000000; padding: 0;'>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Название</th>
+      <th>Состав</th>
+      <th>Годен до</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @medicines.each do |medicine| %>
+      <tr>
+        <td><%= medicine.id %></td>
+        <td><%= medicine.name %></td>
+        <td><%= medicine.compound %></td>
+        <td><%= medicine.best_before_date %></td>
+        <td>
+          <%= link_to 'Show', client_path(client) %> |
+          <%= link_to 'Edit', edit_client_path(client) %> |
+          <%= link_to 'Delete', client_path(client), method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>
+
+<%= link_to 'Добавить медикамент', medicines_new_path %>
