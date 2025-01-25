@@ -1,5 +1,11 @@
 class DoctorsController < ApplicationController
 
+  def destroy
+    @doctor = Doctor.find_by id: params[:id]
+    @doctor.destroy
+    redirect_to doctors_path
+  end
+
   def index
     @doctors = Doctor.all
   end
@@ -29,6 +35,9 @@ class DoctorsController < ApplicationController
       render:edit
     end
   end
+
+  
+
 
   private 
   def doctor_params

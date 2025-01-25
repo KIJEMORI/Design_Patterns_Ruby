@@ -1,5 +1,11 @@
 class RecipesController < ApplicationController
 
+  def destroy
+    @recipe = Recipe.find_by id: params[:id]
+    @recipe.destroy
+    redirect_to recipes_path
+  end
+
   def index
     @recipes = Recipe.all
   end
@@ -29,6 +35,8 @@ class RecipesController < ApplicationController
       render:edit
     end
   end
+
+  
 
   private 
   def recipe_params

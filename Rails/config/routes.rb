@@ -18,19 +18,19 @@ Rails.application.routes.draw do
   # post '/doctors', to: 'doctor#create'
   # get  '/doctors/:id/edit', to: 'doctor#edit', as: "/doctors/edit"
   # patch '/doctors', to: 'doctor#update'
-  resources :doctors, only: %i[index new edit create update delete]
+  resources :doctors, only: %i[index new edit create update destroy] 
   # get '/recipes', to: 'recipe#index'
   # get '/recipes/new', to: 'recipe#new'
   # post '/recipes', to: 'recipe#create'
   # get  '/recipes/:id/edit', to: 'recipe#edit', as: "/recipes/edit"
   # patch '/recipes', to: 'recipe#update'
-  resources :recipes, only: %i[index new edit create update delete]
+  resources :recipes, only: %i[index new edit create update destroy]
   # get '/medicines', to: 'medicine#index'
   # get '/medicines/new', to: 'medicine#new'
   # post '/medicines', to: 'medicine#create'
   # get  '/medicines/:id/edit', to: 'medicine#edit', as: "/medicines/edit"
   # patch '/medicines', to: 'medicine#update'
-  resources :medicines, only: %i[index new edit create update delete]
+  resources :medicines, only: %i[index new edit create update destroy]
 
 
   root 'pages#index'

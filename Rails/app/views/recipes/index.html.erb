@@ -26,7 +26,8 @@
         <td><%= recipe.medicine_id %></td>
         <td><%= recipe.name_of_patient %></td>
         <td>
-          <%= link_to "Изменить", edit_recipe_path(recipe) %>
+          <%= link_to "Изменить", edit_recipe_path(recipe) %> |
+          <%= link_to "Удалить", recipe_path(recipe), data: {method: :delete, confirm: "Уверен?"} %>
         </td>
       </tr>
     <% end %>

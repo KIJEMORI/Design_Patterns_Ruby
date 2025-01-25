@@ -1,5 +1,12 @@
 class MedicinesController < ApplicationController
 
+  def destroy
+    @medicine = Medicine.find_by id: params[:id]
+    @medicine.destroy
+    redirect_to medicines_path
+  end
+
+
   def index
     @medicines = Medicine.all
   end
@@ -29,6 +36,7 @@ class MedicinesController < ApplicationController
       render:edit
     end
   end
+
 
   private 
   def medicine_params

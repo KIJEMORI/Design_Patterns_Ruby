@@ -26,7 +26,8 @@
         <td><%= doctor.profile %></td>
         <td><%= doctor.date_of_birth %></td>
         <td>
-          <%= link_to "Изменить", edit_doctor_path(doctor) %>
+          <%= link_to "Изменить", edit_doctor_path(doctor) %> |
+          <%= link_to "Удалить", doctor_path(doctor), data: {method: :delete, confirm: "Уверен?"} %>
         </td>
       </tr>
     <% end %>
