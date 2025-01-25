@@ -14,11 +14,16 @@ Rails.application.routes.draw do
 
   
   get '/doctors', to: 'doctor#index'
+  get '/doctors/new', to: 'doctor#new'
+  post '/doctors', to: 'doctor#create'
+
   get '/recipes', to: 'recipe#index'
+  get '/recipes/new', to: 'recipe#new'
+  post '/recipes', to: 'recipe#create'
 
   get '/medicines', to: 'medicine#index'
   get '/medicines/new', to: 'medicine#new'
-  # post '/medicines' to: 'medicine#create'
+  post '/medicines', to: 'medicine#create'
 
   root 'pages#index'
 end

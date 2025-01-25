@@ -1,1 +1,37 @@
 <h1> Доктора </h1>
+
+<style>
+    th, td{
+        border: 2px solid #000000;
+        padding: 5px;
+        margin: 0px;
+    }
+</style>
+
+<table style = 'background: #d6d2a9; border: 2px solid #000000; padding: 0;'>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>ФИО</th>
+      <th>Профиль практики</th>
+      <th>Дата рождения</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @doctors.each do |doctor| %>
+      <tr>
+        <td><%= doctor.id %></td>
+        <td><%= doctor.name %></td>
+        <td><%= doctor.profile %></td>
+        <td><%= doctor.date_of_birth %></td>
+        <td>
+          
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>
+
+<%= link_to 'Добавить доктора в БД', doctors_new_path %>

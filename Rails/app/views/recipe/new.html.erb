@@ -1,0 +1,25 @@
+<h1>Добавить рецепт</h1>
+
+<%= form_with model: @recipe do |rec| %>
+<div>
+    <div style = 'margin-bottom: 5px'>
+    id медикамента
+    </div>
+    <%= rec.text_field :medicine_id, required:true, minlength:1%>
+</div>
+<div>
+    <div style = 'margin-bottom: 5px; margin-top: 5px'>
+    id доктора
+    </div>
+    <%= rec.text_field :doctor_id, required:true, minlength:1%>
+</div>
+<div>
+    <div style = 'margin-bottom: 5px; margin-top: 5px'>
+    Выдан на ФИО
+    </div>
+    <%= rec.text_field :name_of_patient, required:false%>
+</div>
+<div style = "margin-top: 20px">
+<%= rec.submit "Добавить" %>
+<div>
+<% end %>

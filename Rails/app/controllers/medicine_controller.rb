@@ -9,7 +9,16 @@ class MedicineController < ApplicationController
   end
 
   def create
-    render plain: params
+    @medicine = Medicine.new question_params
+    if @medicine.save
+      redirect_to medicines_path
+    else
+      render :new
+    end
   end
 
+  private 
+  def question_params
+    params.require(:medicine).permit(:name, :compound, :best_before_date)
+  end
 end 
